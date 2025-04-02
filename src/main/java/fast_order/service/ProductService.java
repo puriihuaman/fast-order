@@ -1,4 +1,3 @@
 package fast_order.service;
 
-public class ProductService {
-}
+public class ProductService {}

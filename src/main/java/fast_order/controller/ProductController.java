@@ -1,4 +1,3 @@
 package fast_order.controller;
 
-public class ProductController {
-}
+public class ProductController {}
