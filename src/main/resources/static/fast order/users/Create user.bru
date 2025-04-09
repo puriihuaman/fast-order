@@ -1,0 +1,22 @@
+meta {
+  name: Create user
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/api/users/create
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Cielaa Fernandez",
+    "email": "sky@gmail.com",
+    "password": "Sky&20_25",
+    "signUpDate": "2025-04-08",
+    "totalSpent": 20.20,
+    "roleId": 3
+  }
+}
