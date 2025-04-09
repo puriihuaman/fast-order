@@ -1,48 +1,47 @@
-package fast_order.entity;
+package fast_order.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Entity(name = "PRODUCT")
-@Table(name = "PRODUCTS", schema = "fast_order_schema")
-@Data
-public class ProductEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_id", unique = true)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class ProductTO {
+    @JsonProperty(value = "id")
     private Long id;
     
     @NotNull(message = "{field.null}")
     @NotEmpty(message = "{field.empty}")
     @Size(min = 4, max = 60, message = "{product.name.size}")
-    @Column(name = "name", unique = true, nullable = false, length = 60)
+    @JsonProperty(value = "name")
     private String name;
     
     @NotNull(message = "{field.null}")
     @PositiveOrZero(message = "{product.stock.positive}")
     @Min(value = 0, message = "{product.stock.min}")
-    @Column(name = "stock", nullable = false)
+    @JsonProperty(value = "stock")
     private Integer stock = 0;
     
     @NotNull(message = "{field.null}")
     @Positive(message = "{product.price.positive}")
     @Min(value = 1, message = "{product.price.min}")
-    @Column(name = "price", nullable = false)
+    @JsonProperty(value = "price")
     private Double price;
     
     @NotNull(message = "{field.null}")
     @Size(min = 10, max = 200, message = "{product.description.size}")
-    @Column(name = "description", nullable = false, length = 200)
+    @JsonProperty(value = "description")
     private String description;
 }
