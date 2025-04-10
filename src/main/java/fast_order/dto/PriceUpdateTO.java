@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 public class PriceUpdateTO {
     @NotNull(message = "{field.null}")
-    @DecimalMin(value = "0.01", message = "El precio debe ser positivo mayor que 0.")
+    @DecimalMin(value = "0.01", message = "{product.price.min}")
     @JsonProperty(value = "price")
     private Double price;
 }

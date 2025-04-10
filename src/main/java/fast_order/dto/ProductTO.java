@@ -1,6 +1,7 @@
 package fast_order.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ProductTO {
-    @JsonProperty(value = "id")
+    @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
     private Long id;
     
     @NotNull(message = "{field.null}")
@@ -36,7 +37,7 @@ public class ProductTO {
     
     @NotNull(message = "{field.null}")
     @Positive(message = "{product.price.positive}")
-    @Min(value = 1, message = "{product.price.min}")
+    @DecimalMin(value = "0.01", message = "{product.price.min}")
     @JsonProperty(value = "price")
     private Double price;
     

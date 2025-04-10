@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -37,7 +38,7 @@ public class ProductEntity {
     
     @NotNull(message = "{field.null}")
     @Positive(message = "{product.price.positive}")
-    @Min(value = 1, message = "{product.price.min}")
+    @DecimalMin(value = "0.01", message = "{product.price.min}")
     @Column(name = "price", nullable = false)
     private Double price;
     
