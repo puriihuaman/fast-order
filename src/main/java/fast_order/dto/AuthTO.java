@@ -18,16 +18,18 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AuthTO {
-    @NotNull
-    @NotEmpty
-    @Email
+    @NotNull(message = "{field.null}")
+    @NotEmpty(message = "{field.empty}")
+    @Email(message = "{auth.email}")
     @Size(max = 60)
     @JsonProperty(value = "email")
     private String email;
     
-    @NotNull
-    @NotEmpty
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$")
+    @NotNull(message = "{field.null}")
+    @NotEmpty(message = "{field.empty}")
+    @Pattern(
+        regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$", message = "{user.password}"
+    )
     @JsonProperty(value = "password")
     private String password;
 }
