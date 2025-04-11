@@ -1,0 +1,15 @@
+meta {
+  name: Find role by id
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8080/api/roles/id/1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoiUk9MRV9BRE1JTiIsIm5hbWUiOiJCeXRlcyBDb2xhYm9yYXRpdm9zIiwiZW1haWwiOiJieXRlc0Bjb2xhYm9yYXRpdm9zLmVzIiwic3ViIjoiYnl0ZXNAY29sYWJvcmF0aXZvcy5lcyIsImlhdCI6MTc0NDEyNTQ0NSwiZXhwIjoxNzQ0MjExODQ1fQ.Y1s9Ry-2cMw5UJS6bCJzCcGUCw_12vSElfbVeLLJE3w
+}

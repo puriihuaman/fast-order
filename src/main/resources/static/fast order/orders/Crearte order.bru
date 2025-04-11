@@ -1,0 +1,19 @@
+meta {
+  name: Crearte order
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8080/api/orders/create
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "amount": 10,
+    "userId": 1,
+    "productId": 20
+  }
+}
