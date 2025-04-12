@@ -2,12 +2,13 @@ package fast_order.service;
 
 import fast_order.dto.RoleTO;
 import fast_order.entity.RoleEntity;
+import fast_order.enums.APIError;
 import fast_order.enums.RoleType;
+import fast_order.exception.APIRequestException;
 import fast_order.mapper.RoleMapper;
 import fast_order.repository.RoleRepository;
 import fast_order.service.use_case.RoleServiceUseCase;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Valid;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -27,28 +28,57 @@ public class RoleService implements RoleServiceUseCase {
     
     @Override
     public List<RoleTO> findRoles() {
-        return roleMapper.toDTOList(roleRepository.findAll());
+        try {
+            return roleMapper.toDTOList(roleRepository.findAll());
+        } catch (DataAccessException ex) {
+            throw new APIRequestException(APIError.DATABASE_ERROR);
+        } catch (Exception ex) {
+            throw new APIRequestException(APIError.INTERNAL_SERVER_ERROR);
+        }
     }
     
     @Override
     public RoleTO findRoleById(Long id) {
-        Optional<RoleEntity> roleEntity = roleRepository.findById(id);
-        
-        if (roleEntity.isEmpty()) {
-            throw new RuntimeException("Role not found");
+        try {
+            Optional<RoleEntity> roleEntity = roleRepository.findById(id);
+            
+            if (roleEntity.isEmpty()) {
+                APIError.RECORD_NOT_FOUND.setTitle("Rol no encontrado");
+                APIError.RECORD_NOT_FOUND.setMessage(
+                    "Al rol al que intentas acceder no existe en el sistema.");
+                throw new APIRequestException(APIError.RECORD_NOT_FOUND);
+            }
+            
+            return roleMapper.toDTO(roleEntity.get());
+        } catch (APIRequestException ex) {
+            throw ex;
+        } catch (DataAccessException ex) {
+            throw new APIRequestException(APIError.DATABASE_ERROR);
+        } catch (Exception ex) {
+            throw new APIRequestException(APIError.INTERNAL_SERVER_ERROR);
         }
-        return roleMapper.toDTO(roleEntity.get());
     }
     
     @Override
     public RoleTO findRoleByRoleName(RoleType roleName) {
-        Optional<RoleEntity> existingRole = roleRepository.findRoleByRoleName(roleName);
-        
-        if (existingRole.isEmpty()) {
-            throw new RuntimeException("Role not found");
+        try {
+            Optional<RoleEntity> existingRole = roleRepository.findRoleByRoleName(roleName);
+            
+            if (existingRole.isEmpty()) {
+                APIError.RECORD_NOT_FOUND.setTitle("Rol no encontrado");
+                APIError.RECORD_NOT_FOUND.setMessage(
+                    "El nombre del rol al que intentas acceder no existe en el sistema.");
+                throw new RuntimeException("Role not found");
+            }
+            
+            return roleMapper.toDTO(existingRole.get());
+        } catch (APIRequestException ex) {
+            throw ex;
+        } catch (DataAccessException ex) {
+            throw new APIRequestException(APIError.DATABASE_ERROR);
+        } catch (Exception ex) {
+            throw new APIRequestException(APIError.INTERNAL_SERVER_ERROR);
         }
-        
-        return roleMapper.toDTO(existingRole.get());
     }
     
     @Override

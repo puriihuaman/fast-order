@@ -1,7 +1,10 @@
 package fast_order.controller;
 
 import fast_order.dto.UserTO;
+import fast_order.enums.APISuccess;
 import fast_order.service.UserService;
+import fast_order.utils.APIResponseData;
+import fast_order.utils.APIResponseHandler;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
 @Validated
@@ -26,33 +31,43 @@ public class UserController {
     }
     
     @GetMapping("all")
-    public ResponseEntity<Object> findAllUsers() {
-        return ResponseEntity.ok(userService.findAllUsers());
+    public ResponseEntity<APIResponseData> findAllUsers() {
+        List<UserTO> users = userService.findAllUsers();
+        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, users);
+        
     }
     
     @GetMapping("id/{id}")
-    public ResponseEntity<Object> findUserById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(userService.findUserById(id));
+    public ResponseEntity<APIResponseData> findUserById(@PathVariable("id") Long id) {
+        UserTO user = userService.findUserById(id);
+        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, user);
     }
     
     @GetMapping("email/{email}")
-    public ResponseEntity<Object> findUserByEmail(@PathVariable("email") String email) {
-        return ResponseEntity.ok(userService.findUserByEmail(email));
+    public ResponseEntity<APIResponseData> findUserByEmail(@PathVariable("email") String email) {
+        UserTO user = userService.findUserByEmail(email);
+        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, user);
     }
     
     @PostMapping("create")
-    public ResponseEntity<Object> createUser(@Valid @RequestBody UserTO user) {
-        return ResponseEntity.ok(userService.createUser(user));
+    public ResponseEntity<APIResponseData> createUser(@Valid @RequestBody UserTO user) {
+        UserTO createdUser = userService.createUser(user);
+        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_CREATED, createdUser);
     }
     
     @PutMapping("update/{id}")
-    public ResponseEntity<Object> updateUser(@PathVariable("id") Long id, @Valid @RequestBody UserTO user) {
-        return ResponseEntity.ok(userService.updateUser(id, user));
+    public ResponseEntity<APIResponseData> updateUser(
+        @PathVariable("id") Long id,
+        @Valid @RequestBody UserTO user
+    )
+    {
+        UserTO updatedUser = userService.updateUser(id, user);
+        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_CREATED, updatedUser);
     }
     
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<Object> deleteUser(@PathVariable("id") Long id) {
+    public ResponseEntity<APIResponseData> deleteUser(@PathVariable("id") Long id) {
         userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_REMOVED, null);
     }
 }

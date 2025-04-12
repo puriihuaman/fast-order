@@ -1,7 +1,10 @@
 package fast_order.controller;
 
 import fast_order.dto.OrderTO;
+import fast_order.enums.APISuccess;
 import fast_order.service.OrderService;
+import fast_order.utils.APIResponseData;
+import fast_order.utils.APIResponseHandler;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/orders", produces = MediaType.APPLICATION_JSON_VALUE)
 @Validated
@@ -26,31 +31,37 @@ public class OrderController {
     }
     
     @GetMapping("all")
-    public ResponseEntity<Object> findAllOrders() {
-        return ResponseEntity.ok(orderService.findAllOrders());
+    public ResponseEntity<APIResponseData> findAllOrders() {
+        List<OrderTO> orders = orderService.findAllOrders();
+        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, orders);
     }
     
     @GetMapping("id/{id}")
-    public ResponseEntity<Object> findOrderById(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(orderService.findOrderById(id));
+    public ResponseEntity<APIResponseData> findOrderById(@PathVariable("id") Long id) {
+        OrderTO order = orderService.findOrderById(id);
+        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, order);
     }
     
     @PostMapping("create")
-    public ResponseEntity<Object> createOrder(@Valid @RequestBody OrderTO order) {
-        return ResponseEntity.ok(orderService.createOrder(order));
+    public ResponseEntity<APIResponseData> createOrder(@Valid @RequestBody OrderTO order) {
+        OrderTO createdOrder = orderService.createOrder(order);
+        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, createdOrder);
     }
     
     @PutMapping("update/{id}")
-    public ResponseEntity<Object> updateOrder(
+    public ResponseEntity<APIResponseData> updateOrder(
         @PathVariable("id") Long id,
         @Valid @RequestBody OrderTO order
     )
     {
-        return ResponseEntity.ok(orderService.updateOrder(id, order));
+        OrderTO updatedOrder = orderService.updateOrder(id, order);
+        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, updatedOrder);
     }
     
     @PatchMapping("cancel/{id}")
-    public ResponseEntity<Object> cancelOrder(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(orderService.cancelOrder(id));
+    public ResponseEntity<APIResponseData> cancelOrder(@PathVariable("id") Long id) {
+        String responseText = orderService.cancelOrder(id);
+        APISuccess.RESOURCE_RETRIEVED.setMessage(responseText);
+        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, null);
     }
 }
