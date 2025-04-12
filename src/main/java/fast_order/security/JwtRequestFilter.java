@@ -1,5 +1,7 @@
 package fast_order.security;
 
+import fast_order.enums.APIError;
+import fast_order.exception.APIRequestException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -64,12 +66,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 } else {
-                    throw new RuntimeException("Unauthorized");
+                    throw new APIRequestException(APIError.UNAUTHORIZED);
                 }
             }
             filterChain.doFilter(request, response);
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
+        } catch (APIRequestException ex) {
+            throw new APIRequestException(APIError.UNAUTHORIZED);
         }
     }
     
