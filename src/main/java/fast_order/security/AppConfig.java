@@ -40,7 +40,7 @@ public class AppConfig {
         return (username) -> {
             Optional<UserEntity>
                 existingUser =
-                userRepository.findByEmail(username.toLowerCase());
+                userRepository.findUserByEmail(username.toLowerCase());
             
             if (existingUser.isEmpty()) {
                 throw new RuntimeException("User not found");
