@@ -1,5 +1,6 @@
 package fast_order.service.use_case;
 
+import fast_order.dto.PriceUpdateTO;
 import fast_order.dto.ProductTO;
 
 import java.util.List;
@@ -17,9 +18,9 @@ public interface ProductServiceUseCase {
     
     void deleteProduct(Long id);
     
-    ProductTO updateProductPrice(Long id, Double price);
+    ProductTO updateProductPrice(Long id, PriceUpdateTO newPrice);
     
     ProductTO updateProductStock(Long id, Integer amount);
     
-    int decreaseProductStock(Long id, Integer amount);
+    void decreaseProductStock(Long id, Integer amount);
 }

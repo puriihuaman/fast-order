@@ -2,12 +2,13 @@ package fast_order.utils;
 
 import fast_order.dto.RoleTO;
 import fast_order.dto.UserTO;
+import fast_order.enums.APIError;
 import fast_order.enums.RoleType;
+import fast_order.exception.APIRequestException;
 import fast_order.service.RoleService;
 import fast_order.service.UserService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.dao.DataAccessException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,17 +19,11 @@ import java.util.Arrays;
 public class DataInitializer {
     private final UserService userService;
     private final RoleService roleService;
-    private final PasswordEncoder passwordEncoder;
     
-    public DataInitializer(
-        UserService userService,
-        RoleService roleService,
-        PasswordEncoder passwordEncoder
-    )
+    public DataInitializer(UserService userService, RoleService roleService)
     {
         this.userService = userService;
         this.roleService = roleService;
-        this.passwordEncoder = passwordEncoder;
     }
     
     @PostConstruct
@@ -40,12 +35,17 @@ public class DataInitializer {
     
     private void createRoles() {
         Arrays.stream(RoleType.values()).forEach((role) -> {
-            RoleTO roleToCreate = RoleTO
-                .builder()
-                .roleName(role)
-                .description("Role " +
-                                 role.getRoleName())
-                .build();
+            String adminDescription = "Acceso total al sistema.";
+            String userDescription = "Acceso limitado a sus permisos.";
+            String invitedDescription = "Acceso restringido.";
+            
+            RoleTO
+                roleToCreate =
+                RoleTO.builder().roleName(role).description(role.equals(RoleType.ADMIN)
+                                                                ? adminDescription
+                                                                : role.equals(RoleType.USER)
+                                                                    ? userDescription
+                                                                    : invitedDescription).build();
             
             roleService.createRole(roleToCreate);
         });
@@ -64,7 +64,7 @@ public class DataInitializer {
                 .builder()
                 .name("Bytes Colaborativos")
                 .email("bytes@colaborativos.es")
-                .password(passwordEncoder.encode(ENCODED_PASSWORD))
+                .password(ENCODED_PASSWORD)
                 .signUpDate(LocalDate.now())
                 .totalSpent(0.0)
                 .roleId(createdRole.getId())
@@ -75,10 +75,12 @@ public class DataInitializer {
             System.out.println(userCreated.getId());
             System.out.println(userCreated.getEmail());
             System.out.println("--------- USER CREATED ----------");
+        } catch (APIRequestException ex) {
+            throw ex;
         } catch (DataAccessException ex) {
-            throw new RuntimeException("Error database accesses");
+            throw new APIRequestException(APIError.DATABASE_ERROR);
         } catch (Exception ex) {
-            throw new RuntimeException(ex);
+            throw new APIRequestException(APIError.INTERNAL_SERVER_ERROR);
         }
     }
 }
