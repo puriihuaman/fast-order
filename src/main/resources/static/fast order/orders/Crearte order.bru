@@ -7,13 +7,13 @@ meta {
 post {
   url: http://localhost:8080/api/orders/create
   body: json
-  auth: none
+  auth: inherit
 }
 
 body:json {
   {
-    "amount": 10,
+    "amount": 15,
     "userId": 1,
-    "productId": 20
+    "productId": 1
   }
 }
