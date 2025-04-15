@@ -11,12 +11,22 @@ import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 
-
+/**
+ * Configuring Swagger for API documentation.
+ * This class uses OpenAPI (Swagger 3) annotation to define general API information and configure
+ * the JWT (JSON Web Tokens) based security scheme.
+ * -
+ * {@code @Configuration} provides bean definitions for the application, although in this case,
+ * it is primarily used for declarative configuration of Swagger via annotations.
+ * {@code @OpenAPIDefinition} defines the API metadata.
+ * {@code @SecuritySchema} configures the "Security Token" authentication scheme to use JWT in
+ * the HTTP request header.
+ */
 @Configuration
 @OpenAPIDefinition(
     info = @Info(
         title = "FAST ORDER API", version = "1.0.0",
-        description = "API Rest que permite gestionar pedidos de productos de manera eficiente y segura.",
+        description = "Rest API that allows you to manage product orders efficiently and securely.",
         termsOfService = "https://swagger.io/terms/", contact = @Contact(
         name = "Pedro Purihuaman", url = "https://puriihuaman.netlify.app/",
         email = "pedropuriihuaman@gmail.com"
