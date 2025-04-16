@@ -6,8 +6,25 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+/**
+ * Represents the possible states of an order in the system.
+ * -
+ * Used to track order lifecycle and enforce business rules during state transitions.
+ * The enum values are serialized/deserialized using lowercase strings in JSON format.
+ */
 public enum OrderStatus {
-    PENDING("pending"), FINISHED("finished"), CANCELLED("cancelled");
+    /**
+     * Initial state of a newly created order. The order is awaiting processing.
+     */
+    PENDING("pending"),
+    /**
+     * Final state indicating successful order completion and fulfillment.
+     */
+    FINISHED("finished"),
+    /**
+     * Terminal state for orders that were canceled before completion.
+     */
+    CANCELLED("cancelled");
     
     private final String value;
     
@@ -34,9 +51,9 @@ public enum OrderStatus {
     }
     
     /**
-     * Retorna una cadena de texto, con los valores de los estados.
+     * Returns a text string, with the values of the states.
      *
-     * @return "1, 2, 0"
+     * @return "pending, finished, cancelled"
      */
     private static String getValidOrderStatus() {
         return Arrays.stream(values()).map(OrderStatus::getValue).collect(Collectors.joining(", "));

@@ -2,6 +2,8 @@ package fast_order.security;
 
 import fast_order.dto.RoleTO;
 import fast_order.dto.UserTO;
+import fast_order.enums.APIError;
+import fast_order.exception.APIRequestException;
 import fast_order.service.RoleService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -33,8 +35,13 @@ public class JwtUtil {
     
     public String extractUsername(String token) {
         if (token == null || token.isEmpty()) {
-            throw new IllegalArgumentException("token is null or empty");
+            throw new APIRequestException(
+                APIError.UNAUTHORIZED,
+                                          "Token requerido",
+                                          "El token esta vacío"
+            );
         }
+
         return this.extractClaim(token, Claims::getSubject);
     }
     

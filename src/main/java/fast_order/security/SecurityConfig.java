@@ -39,29 +39,51 @@ public class SecurityConfig {
                 )
                 .permitAll();
             
-            authRequest.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
-            authRequest.requestMatchers("/users/**").permitAll();
+            // Auth
+            authRequest.requestMatchers("/auth/login").permitAll();
             
-            // Roles
-            authRequest.requestMatchers(HttpMethod.GET, "/users/**").permitAll();
-            authRequest.requestMatchers(HttpMethod.POST, "/users/**").hasAnyRole(
+            // Users
+            authRequest
+                .requestMatchers(HttpMethod.DELETE, "/users/delete/**")
+                .hasAnyRole(ROLE_ADMIN);
+            authRequest.requestMatchers("/users/create", "/users/update/**").hasAnyRole(
                 ROLE_ADMIN,
                 ROLE_USER
             );
-            authRequest.requestMatchers(HttpMethod.PUT, "/users/**").hasAnyRole(
+            authRequest.requestMatchers("/users/id/**", "/users/all").hasAnyRole(
                 ROLE_ADMIN,
-                ROLE_USER
+                ROLE_USER,
+                ROLE_INVITED
             );
-            authRequest.requestMatchers(HttpMethod.DELETE, "/users/**").hasAnyRole(ROLE_ADMIN);
+            
             
             // Products
-            authRequest.requestMatchers(HttpMethod.GET, "/products/**").permitAll();
-            authRequest.requestMatchers(HttpMethod.POST, "/products/**").hasAnyRole(
+            authRequest.requestMatchers(HttpMethod.DELETE, "/products/delete/**").hasAnyRole(
+                ROLE_ADMIN);
+            authRequest.requestMatchers(
+                "/products/create",
+                "/products/update/**",
+                "/products/update/price/**",
+                "/products/update/stock/**"
+            ).hasAnyRole(ROLE_ADMIN, ROLE_USER);
+            authRequest.requestMatchers("/products/id/**", "/products/all").hasAnyRole(
+                ROLE_ADMIN,
+                ROLE_USER,
+                ROLE_INVITED
+            );
+            
+            // Orders
+            authRequest.requestMatchers(HttpMethod.DELETE, "/products/cancel/**").hasAnyRole(
+                ROLE_ADMIN);
+            authRequest.requestMatchers("/products/create", "/products/update/**").hasAnyRole(
                 ROLE_ADMIN,
                 ROLE_USER
             );
-            authRequest.requestMatchers(HttpMethod.PUT, "/products/**").hasAnyRole(ROLE_ADMIN);
-            authRequest.requestMatchers(HttpMethod.DELETE, "/products/**").hasAnyRole(ROLE_ADMIN);
+            authRequest.requestMatchers("/products/id/**", "/products/all").hasAnyRole(
+                ROLE_ADMIN,
+                ROLE_USER,
+                ROLE_INVITED
+            );
             
             authRequest.anyRequest().authenticated();
         });
