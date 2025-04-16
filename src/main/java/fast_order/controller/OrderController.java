@@ -45,6 +45,9 @@ public class OrderController {
     @PostMapping("create")
     public ResponseEntity<APIResponseData> createOrder(@Valid @RequestBody OrderTO order) {
         OrderTO createdOrder = orderService.createOrder(order);
+        
+        APISuccess.RESOURCE_RETRIEVED.setMessage("Order created successfully.");
+        
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, createdOrder);
     }
     
@@ -55,13 +58,18 @@ public class OrderController {
     )
     {
         OrderTO updatedOrder = orderService.updateOrder(id, order);
+        
+        APISuccess.RESOURCE_RETRIEVED.setMessage("Order updated successfully.");
+        
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, updatedOrder);
     }
     
     @PatchMapping("cancel/{id}")
     public ResponseEntity<APIResponseData> cancelOrder(@PathVariable("id") Long id) {
         String responseText = orderService.cancelOrder(id);
+        
         APISuccess.RESOURCE_RETRIEVED.setMessage(responseText);
+        
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, null);
     }
 }

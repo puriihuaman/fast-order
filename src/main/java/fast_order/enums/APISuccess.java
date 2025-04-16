@@ -8,10 +8,10 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @Getter
 public enum APISuccess {
-    RESOURCE_RETRIEVED("Operación exitosa.", HttpStatus.OK),
-    RESOURCE_CREATED("Recurso creado satisfactoriamente.", HttpStatus.CREATED),
-    RESOURCE_UPDATED("Recurso actualizado con éxito.", HttpStatus.OK),
-    RESOURCE_REMOVED("Recurso eliminado.", HttpStatus.NO_CONTENT);
+    RESOURCE_RETRIEVED("Successful operation.", HttpStatus.OK),
+    RESOURCE_CREATED("Resource created successfully.", HttpStatus.CREATED),
+    RESOURCE_UPDATED("Resource successfully updated.", HttpStatus.OK),
+    RESOURCE_REMOVED("Resource successfully deleted.", HttpStatus.NO_CONTENT);
     
     private String message;
     private final HttpStatus status;
