@@ -75,7 +75,7 @@ Tenemos dos opciones:
 
 Esta es su interfaz:
 
-[]{}
+![Demo de Swagger](src/main/resources/static/images/Swagger-demo.png)
 
 Como podemos observar, tenemos la interfaz de Swagger.
 
