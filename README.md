@@ -67,6 +67,49 @@ fast-order/
 └── pom.xml
 ```
 
+### 🏷 Tablas o entidades
+
+Entidad `role`.
+
+| Campo       | Tipo            | Descripción         |
+|-------------|-----------------|---------------------|
+| id          | Long            | Identificador único |
+| role_name   | Enum (RoleType) | Nombre del rol      |
+| description | String          | Descripción del rol |
+
+Entidad `user`.
+
+| Campo        | Tipo              | Descripción           |
+|--------------|-------------------|-----------------------|
+| id           | Long              | Identificador único   |
+| name         | String            | Nombre completo       |
+| email        | String            | Correo electrónico    |
+| password     | String            | Contraseña de usuario |
+| sign_up_date | Date              | Fecha de registro     |
+| total_spent  | Double            | Total de gastos       |
+| role         | Role (RoleEntity) | Rol del usuario       |
+
+Entidad `product`.
+
+| Campo       | Tipo   | Descripción           |
+|-------------|--------|-----------------------|
+| id          | Long   | Identificador único   |
+| name        | String | Nombre del producto   |
+| stock       | String | Número de existencias |
+| price       | Double | Precio del producto   |
+| description | String | Detalles del producto |
+
+Entidad `order`.
+
+| Campo      | Tipo                   | Descripción                |
+|------------|------------------------|----------------------------|
+| id         | Long                   | Identificador único        |
+| amount     | Integer                | Cantidad de productos      |
+| user       | User(UserEntity)       | Identificador del usuario  |
+| product    | Product(ProductEntity) | Identificador del producto |
+| status     | Enum(OrderStatus)      | Estado del pedido          |
+| created_at | Date                   | Fecha de creación          |
+
 ---
 
 ## ⚙ Instalación y Configuración
@@ -86,8 +129,20 @@ fast-order/
        ```sql
       CREATE SCHEMA schema_name;
       ```
-    - d
-3. **Configurar variables de entorno**
+3. **Tener instalado Apache Kafka**
+
+   [Descargar Apache Kafka](https://dlcdn.apache.org/kafka/3.9.0/kafka_2.13-3.9.0.tgz)  
+   _Abrir una terminal y ejecutar los siguientes comandos en ventas distintas_.
+    - Iniciar el servidor de Zookeeper:
+      ```bash
+      .\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
+      ```
+    - Iniciar el servidor de Kafka:
+      ```bash
+      .\bin\windows\kafka-server-start.bat .\config\server.properties
+      ```
+
+4. **Configurar variables de entorno**
 
    📄 Crear archivo `.env` con las siguientes variables de entorno (revisar el archivo `.env.demo`):
 
@@ -96,21 +151,24 @@ fast-order/
     SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/db_name?currentSchema=schema_name
     SPRING_DATASOURCE_USERNAME=your_user
     SPRING_DATASOURCE_PASSWORD=your_password
-    #
+
     # Seguridad
     SECURITY_USER_NAME=admin
     SECURITY_USER_PASSWORD=admin
-    #
+
     # JWT
     SECRET_KEY=62d84588dd8e4b359...
     TIME_EXPIRATION=86400000
-    ```
 
-4. **Ejecutar la aplicación.**
+    # KAFKA
+    KAFKA_TOPIC_NAME=fast-order-topic
+    KAFKA_TOPIC_GROUP=kafka-fast-order-group
+    ```
+5. **Ejecutar la aplicación.**
    ```bash
    mvn spring-boot:run
    ```
-5. **Probar la API**
+6. **Probar la API**
     - Autenticación desde Postman:  
       `POST http://localhost:8080/api/auth/login`
     - Documentación Swagger (en el navegador):  
@@ -118,11 +176,11 @@ fast-order/
 
 ---
 
-## 📃Documentación
+## 📃Manual de usuario
 
 > [!NOTE]
-> Para mas información de como consumir la API, ver el siguiente
-> archivo [Documentación](FastOrderDoc.md).
+> Para más información de como consumir la API, ver el siguiente
+> archivo [Manual de usuario](FastOrderDoc.md).
 ---
 
 ## 🤝 Contribución
@@ -132,6 +190,7 @@ comunidad [Bytes Colaborativos](https://www.twitch.tv/bytescolaborativos). Si de
 
 - Crea un _issue_ para sugerir mejoras.
 - Abre un _pull request_ con tu propuesta.
+- Código fuente: https://github.com/puriihuaman/fast-order
 
 ---
 
@@ -143,4 +202,10 @@ de [Bytes Colaborativos](https://www.twitch.tv/bytescolaborativos)?
 - Twitch: [Bytes Colaborativos](https://www.twitch.tv/bytescolaborativos)
 - Discord: [Bytes Colaborativos](https://discord.gg/6A8ZRerS)
 
+## Desarrollado
 
+*Autor: Pedro Purihuaman*
+
+- GitHub: https://github.com/puriihuaman
+- LinkedIn: https://www.linkedin.com/in/pedropurihuaman/
+- Código fuente: https://github.com/puriihuaman/fast-order

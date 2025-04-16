@@ -2,6 +2,7 @@ package fast_order.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fast_order.enums.RoleType;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotEmpty;
@@ -13,20 +14,49 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Data Transfer Object (DTO) that plays a role in the authentication and authorization system.
+ * -
+ * Defines the permissions and privileges associated with users.
+ * It is used in role management and permission assignment operations within the system.
+ * -
+ * Lombok annotations ({@code @Builder}, {@code @Getter}, {@code @Setter}) automatically generate
+ * the builder pattern, accessor methods, and modifier methods.
+ * Validations ensure data integrity in CRUD operations.
+ */
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 @Getter
 @Setter
+@Schema(
+    name = "Role",
+    description = """
+                  A DTO that represents a role within the authentication and authorization system.
+                  It is used to define permissions associated with users.
+                  """
+)
 public class RoleTO {
+    @Schema(
+        description = "Unique role ID", example = "1", accessMode = Schema.AccessMode.READ_ONLY,
+        hidden = true
+    )
     @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
     private Long id;
     
+    @Schema(
+        description = "Role name.", examples = {"ADMIN", "USER", "INVITED"},
+        requiredMode = Schema.RequiredMode.REQUIRED
+    )
     @NotNull(message = "{field.null}")
     @Enumerated(EnumType.STRING)
     @JsonProperty(value = "roleName")
-    private RoleType roleName;
+    private RoleType roleName = RoleType.ADMIN;
     
+    @Schema(
+        description = "Role description.", example = "Full system access",
+        requiredMode = Schema.RequiredMode.REQUIRED
+    )
     @NotNull(message = "{field.null}")
     @NotEmpty(message = "{field.empty}")
     @Size(min = 5, message = "{role.description.size}")
