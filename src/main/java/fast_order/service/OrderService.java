@@ -1,5 +1,6 @@
 package fast_order.service;
 
+import fast_order.dto.KafkaNotificationTO;
 import fast_order.dto.OrderTO;
 import fast_order.dto.ProductTO;
 import fast_order.dto.UserTO;
@@ -11,6 +12,7 @@ import fast_order.mapper.OrderMapper;
 import fast_order.mapper.ProductMapper;
 import fast_order.mapper.UserMapper;
 import fast_order.repository.OrderRepository;
+import fast_order.service.kafka.KafkaProducerService;
 import fast_order.service.use_case.OrderServiceUseCase;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -27,6 +29,7 @@ public class OrderService implements OrderServiceUseCase {
     private final ProductService productService;
     private final UserMapper userMapper;
     private final ProductMapper productMapper;
+    private final KafkaProducerService kafkaProducer;
     
     public OrderService(
         OrderRepository orderRepository,
@@ -34,7 +37,8 @@ public class OrderService implements OrderServiceUseCase {
         UserService userService,
         ProductService productService,
         UserMapper userMapper,
-        ProductMapper productMapper
+        ProductMapper productMapper,
+        KafkaProducerService kafkaProducer
     )
     {
         this.orderRepository = orderRepository;
@@ -43,6 +47,7 @@ public class OrderService implements OrderServiceUseCase {
         this.productService = productService;
         this.userMapper = userMapper;
         this.productMapper = productMapper;
+        this.kafkaProducer = kafkaProducer;
     }
     
     @Override
@@ -62,8 +67,9 @@ public class OrderService implements OrderServiceUseCase {
             Optional<OrderEntity> orderExisting = orderRepository.findById(id);
             
             if (orderExisting.isEmpty()) {
-                APIError.RECORD_NOT_FOUND.setTitle("Orden no encontrado");
-                APIError.RECORD_NOT_FOUND.setMessage("El orden al que intentas acceder no existe.");
+                APIError.RECORD_NOT_FOUND.setTitle("Order not found");
+                APIError.RECORD_NOT_FOUND.setMessage(
+                    "The order you are trying to access does not exist.");
                 throw new APIRequestException(APIError.RECORD_NOT_FOUND);
             }
             
@@ -89,9 +95,9 @@ public class OrderService implements OrderServiceUseCase {
             
             Boolean hasStock = productService.checkStock(existingProduct, order.getAmount());
             if (!hasStock) {
-                APIError.RESOURCE_CONFLICT.setTitle("Stock insuficiente");
+                APIError.RESOURCE_CONFLICT.setTitle("Insufficient stock");
                 APIError.RESOURCE_CONFLICT.setMessage(
-                    "Stock insuficiente para el producto solicitado.");
+                    "Insufficient stock for the requested product.");
                 
                 throw new APIRequestException(APIError.RESOURCE_CONFLICT);
             }
@@ -103,11 +109,16 @@ public class OrderService implements OrderServiceUseCase {
             orderEntity.setCreatedAt(LocalDateTime.now());
             orderEntity.setStatus(OrderStatus.PENDING);
             
-            OrderEntity savedOrderEntity = orderRepository.save(orderEntity);
+            OrderEntity savedOrder = orderRepository.save(orderEntity);
             
             productService.decreaseProductStock(existingProduct.getId(), order.getAmount());
             
-            return orderMapper.toDTO(savedOrderEntity);
+            KafkaNotificationTO notification = KafkaNotificationTO.builder().message(
+                "Order created successfully").orderId(savedOrder.getId()).build();
+            
+            kafkaProducer.sendNotification(notification);
+            
+            return orderMapper.toDTO(savedOrder);
         } catch (APIRequestException ex) {
             throw ex;
         } catch (DataAccessException ex) {
@@ -137,7 +148,14 @@ public class OrderService implements OrderServiceUseCase {
             
             OrderEntity orderEntity = orderMapper.toEntity(existingOrder);
             
-            return orderMapper.toDTO(orderRepository.save(orderEntity));
+            OrderEntity updatedOrder = orderRepository.save(orderEntity);
+            
+            KafkaNotificationTO notification = KafkaNotificationTO.builder().message(
+                "Order updated successfully").orderId(updatedOrder.getId()).build();
+            
+            kafkaProducer.sendNotification(notification);
+            
+            return orderMapper.toDTO(updatedOrder);
         } catch (APIRequestException ex) {
             throw ex;
         } catch (DataAccessException ex) {
@@ -160,16 +178,20 @@ public class OrderService implements OrderServiceUseCase {
             );
             
             if (affectedRecords == 0) {
-                APIError.RESOURCE_CONFLICT.setTitle("Error al cancelar la orden");
-                APIError.RESOURCE_CONFLICT.setMessage(
-                    "Ocurrió un error al momento de cancelar la orden.");
+                APIError.RESOURCE_CONFLICT.setTitle("Error canceling order");
+                APIError.RESOURCE_CONFLICT.setMessage("An error occurred while canceling the order.");
                 
                 throw new APIRequestException(APIError.RESOURCE_CONFLICT);
             }
             
             productService.updateProductStock(existingProduct.getId(), existingOrder.getAmount());
             
-            return "La orden fue cancelada exitosamente.";
+            KafkaNotificationTO notification = KafkaNotificationTO.builder().message(
+                "Order deleted successfully").orderId(existingOrder.getId()).build();
+            
+            kafkaProducer.sendNotification(notification);
+            
+            return "The order was successfully cancelled.";
         } catch (APIRequestException ex) {
             throw ex;
         } catch (DataAccessException ex) {
