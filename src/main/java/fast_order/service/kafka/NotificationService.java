@@ -5,7 +5,7 @@ import fast_order.dto.NotificationTO;
 import fast_order.entity.NotificationEntity;
 import fast_order.mapper.NotificationMapper;
 import fast_order.repository.NotificationRepository;
-import fast_order.service.kafka.use_case.NotificationServiceUseCase;
+import fast_order.service.use_case.NotificationServiceUseCase;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,7 +34,6 @@ public class NotificationService implements NotificationServiceUseCase {
         
         NotificationEntity notificationToSave = notificationMapper.toEntity(newNotification);
         NotificationEntity notificationSaved = notificationRepository.save(notificationToSave);
-        
         System.out.println("------------------");
         System.out.println("------------------");
         System.out.println("NOTIFICATION SAVED");

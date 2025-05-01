@@ -24,7 +24,8 @@ public class CorsConfig {
     private static final List<String> ORIGINS = List.of(
         "http://localhost:4200",
         "http://localhost:4321",
-        "http://localhost:5173"
+        "http://localhost:5173",
+        "http://localhost:8080"
     );
     
     /**
@@ -38,7 +39,6 @@ public class CorsConfig {
         HttpMethod.DELETE.name(),
         HttpMethod.PATCH.name()
     );
-    
     
     /**
      * List of allowed headers that clients can include in their API requests.

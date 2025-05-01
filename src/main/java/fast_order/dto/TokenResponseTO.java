@@ -1,4 +1,4 @@
-package fast_order.security;
+package fast_order.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,7 +19,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
                   It contains the JWT token and data of the authenticated user.
                   """
 )
-public record TokenResponse(
+public record TokenResponseTO(
     @Schema(
         description = "JWT token generated to access protected resources.",
         example = "eyJhbGciOiJIUzI1NiJ9.xxx.xxx.xxx.xxx.xxx"

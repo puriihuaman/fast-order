@@ -3,7 +3,7 @@ package fast_order.service;
 import fast_order.dto.PriceUpdateTO;
 import fast_order.dto.ProductTO;
 import fast_order.entity.ProductEntity;
-import fast_order.enums.APIError;
+import fast_order.commons.enums.APIError;
 import fast_order.exception.APIRequestException;
 import fast_order.mapper.ProductMapper;
 import fast_order.repository.ProductRepository;
@@ -164,7 +164,7 @@ public class ProductService implements ProductServiceUseCase {
             
             int productUpdated = productRepository.updateProductPrice(
                 existingProduct.getId(),
-                newPrice.getPrice()
+                newPrice.price()
             );
             
             if (productUpdated == 0) {

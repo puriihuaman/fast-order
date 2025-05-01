@@ -1,11 +1,11 @@
 package fast_order.controller;
 
 import fast_order.dto.OrderTO;
-import fast_order.enums.APISuccess;
+import fast_order.commons.enums.APISuccess;
 import fast_order.service.OrderService;
 import fast_order.utils.APIResponseData;
 import fast_order.utils.APIResponseHandler;
-import fast_order.annotation.SwaggerApiResponses;
+import fast_order.commons.annotation.SwaggerApiResponses;
 import fast_order.utils.SwaggerResponseExample;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

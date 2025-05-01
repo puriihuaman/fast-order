@@ -1,7 +1,7 @@
 package fast_order.repository;
 
 import fast_order.entity.RoleEntity;
-import fast_order.enums.RoleType;
+import fast_order.commons.enums.RoleType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

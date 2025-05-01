@@ -22,17 +22,17 @@ import java.time.LocalDate;
 /**
  * Data Transfer Object (DTO) that represents a user registered in the system.
  * -
- *  Contains information about the user, including their email address, relationships with other
- *  entities, and validation restrictions.
- *  It is primarily used for registration and user management.
- *  -
- *  Lombok annotations ({@code @Builder}, {@code @Getter}, {@code @Setter}) automatically generate
- *  the builder pattern, access methods, and modification methods.
- *  Validations ensure compliance with security policies and data formats.
+ * Contains information about the user, including their email address, relationships with other
+ * entities, and validation restrictions.
+ * It is primarily used for registration and user management.
+ * -
+ * Lombok annotations ({@code @Builder}, {@code @Getter}, {@code @Setter}) automatically generate
+ * the builder pattern, access methods, and modification methods.
+ * Validations ensure compliance with security policies and data formats.
  */
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @Getter
 @Setter
 @Schema(name = "User", description = "DTO that represents a user registered in the system.")
@@ -69,8 +69,7 @@ public class UserTO {
                       User password. Must contain uppercase and lowercase letters, numbers,
                       and special characters.
                       Minimum 8 characters.
-                      """,
-        example = "J0rG3#B&t3s", requiredMode = Schema.RequiredMode.REQUIRED
+                      """, example = "J0rG3#B&t3s", requiredMode = Schema.RequiredMode.REQUIRED
     )
     @NotNull(message = "{field.null}")
     @NotEmpty(message = "{field.empty}")
@@ -95,8 +94,7 @@ public class UserTO {
     private Double totalSpent;
     
     @Schema(
-        description = "ID of the assigned to the user. Relates to the Role entity",
-        example = "2"
+        description = "ID of the assigned to the user. Relates to the Role entity", example = "2"
     )
     @NotNull(message = "{user.roleId}")
     @JsonProperty(value = "roleId")

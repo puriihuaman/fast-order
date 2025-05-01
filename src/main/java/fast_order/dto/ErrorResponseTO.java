@@ -1,6 +1,7 @@
 package fast_order.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +17,7 @@ import java.util.Map;
  * -
  * Lombok annotations ({@code @Getter}, {@code @Setter}) generate accessors mutators automáticamente.
  */
+@Builder
 @Getter
 @Setter
 @Schema(
@@ -23,7 +25,7 @@ import java.util.Map;
 )
 public class ErrorResponseTO {
     @Schema(description = "Indicates whether the response contains an error.", example = "true")
-    private Boolean hasError = true;
+    private final Boolean hasError = true;
     
     @Schema(description = "Short title of the error.", example = "Invalid data")
     private String title;
@@ -51,19 +53,5 @@ public class ErrorResponseTO {
     @Schema(
         description = "Date and time the error occurred.", example = "2025-04-13T15:42:00"
     )
-    private LocalDateTime timestamp = ZonedDateTime.now().toLocalDateTime();
-    
-    public ErrorResponseTO(
-        String title,
-        String message,
-        Integer statusCode,
-        Map<String, String> reasons
-    )
-    {
-        super();
-        this.title = title;
-        this.message = message;
-        this.statusCode = statusCode;
-        this.reasons = reasons;
-    }
+    private final LocalDateTime timestamp = ZonedDateTime.now().toLocalDateTime();
 }

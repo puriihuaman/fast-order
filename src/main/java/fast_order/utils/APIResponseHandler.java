@@ -1,6 +1,6 @@
 package fast_order.utils;
 
-import fast_order.enums.APISuccess;
+import fast_order.commons.enums.APISuccess;
 import org.springframework.http.ResponseEntity;
 
 /**

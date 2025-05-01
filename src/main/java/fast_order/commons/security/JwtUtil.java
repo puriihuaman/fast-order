@@ -1,8 +1,8 @@
-package fast_order.security;
+package fast_order.commons.security;
 
 import fast_order.dto.RoleTO;
 import fast_order.dto.UserTO;
-import fast_order.enums.APIError;
+import fast_order.commons.enums.APIError;
 import fast_order.exception.APIRequestException;
 import fast_order.service.RoleService;
 import io.jsonwebtoken.Claims;
@@ -38,10 +38,10 @@ public class JwtUtil {
             throw new APIRequestException(
                 APIError.UNAUTHORIZED,
                                           "Token requerido",
-                                          "El token esta vacío"
+                                          "El token esta vacío."
             );
         }
-
+        
         return this.extractClaim(token, Claims::getSubject);
     }
     
@@ -55,12 +55,11 @@ public class JwtUtil {
     }
     
     private Claims extractAllClaims(String token) {
-        return Jwts
-            .parser()
-            .verifyWith(this.getKey())
-            .build()
-            .parseSignedClaims(token)
-            .getPayload();
+        return Jwts.parser()
+                   .verifyWith(this.getKey())
+                   .build()
+                   .parseSignedClaims(token)
+                   .getPayload();
     }
     
     public boolean isTokenExpired(String token) {
@@ -80,14 +79,13 @@ public class JwtUtil {
         Date time = new Date(System.currentTimeMillis());
         Date expiration = new Date(System.currentTimeMillis() + TIME_EXPIRATION);
         
-        return Jwts
-            .builder()
-            .claims(claims)
-            .subject(subject)
-            .issuedAt(time)
-            .expiration(expiration)
-            .signWith(this.getKey(), Jwts.SIG.HS256)
-            .compact();
+        return Jwts.builder()
+                   .claims(claims)
+                   .subject(subject)
+                   .issuedAt(time)
+                   .expiration(expiration)
+                   .signWith(this.getKey(), Jwts.SIG.HS256)
+                   .compact();
     }
     
     public boolean validateToken(String token, UserDetails userDetails) {

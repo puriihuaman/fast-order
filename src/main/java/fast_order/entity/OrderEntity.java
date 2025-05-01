@@ -1,6 +1,6 @@
 package fast_order.entity;
 
-import fast_order.enums.OrderStatus;
+import fast_order.commons.enums.OrderStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,14 +16,22 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ORDERS", schema = "fast_order_schema")
-@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class OrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,7 +54,6 @@ public class OrderEntity {
     @JoinColumn(name = "product_id", referencedColumnName = "product_id", nullable = false)
     private ProductEntity product;
     
-    // @NotNull(message = "{field.null}")
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 15)
     private OrderStatus status = OrderStatus.PENDING;

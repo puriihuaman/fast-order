@@ -3,7 +3,7 @@ package fast_order.service;
 import fast_order.dto.RoleTO;
 import fast_order.dto.UserTO;
 import fast_order.entity.UserEntity;
-import fast_order.enums.APIError;
+import fast_order.commons.enums.APIError;
 import fast_order.exception.APIRequestException;
 import fast_order.mapper.RoleMapper;
 import fast_order.mapper.UserMapper;

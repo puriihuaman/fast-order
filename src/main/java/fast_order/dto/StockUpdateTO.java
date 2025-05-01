@@ -5,27 +5,26 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Data Transfer Object (DTO) to update the available stock of an existing product in the system.
  * -
- * Contains the information necessary to increase the available quantity of a product, ensuring
- * basic integrity and format validation.
- * It is typically used in partial update operations (PATCH) for inventory adjustments.
+ * This record contains the information needed to increase the available inventory
+ * quantity of a specific product.
+ * It is commonly used in partial update (PATCH) operations for inventory adjustments.
  * -
- * Lombok annotations ({@code @Getter}, {@code @Setter}) automatically generate access and
- * modification methods.
- * Validation annotations ensure compliance with business rules for stock increments.
+ * Lombok annotations ({@code @Getter}, {@code @Setter} in a record) automatically generate
+ * field access methods.
+ * Validation annotations ensure that the stock increment complies with the defined business rules.
+ *
+ * @param amount The amount to increase in the current stock of the product.
+ *               Must be a value greater than 0.
  */
-@Getter
-@Setter
 @Schema(
     name = "StockUpdate",
     description = "DTO used to increase the available stock of an existing product in the system."
 )
-public class StockUpdateTO {
+public record StockUpdateTO (
     @Schema(
         description = "Amount to increase in the current stock of the product. Must be greater than 0.",
         example = "1", requiredMode = Schema.RequiredMode.REQUIRED
@@ -34,5 +33,5 @@ public class StockUpdateTO {
     @Min(value = 1, message = "{amount.min}")
     @Positive(message = "{amount.positive}")
     @JsonProperty(value = "amount")
-    private Integer amount;
-}
+    Integer amount
+){}
