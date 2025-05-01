@@ -1,33 +1,76 @@
 package fast_order.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 /**
  * Configuring CORS (Cross-Origin Resource Sharing) for the API.
+ * This class defines CORS policies to allow requests from specific domains, with allowed
+ * methods and headers, and enabling the sending of credentials.
  */
 @Configuration
-public class CorsConfig implements WebMvcConfigurer {
+public class CorsConfig {
     /**
-     * Configure CORS policies for the application.
-     * This method is automatically invoked by Spring MVC to register CORS mappings.
-     * In this implementation, a global mapping is configured for all API routes.
-     *
-     * @param registry The CORS mapping registry allows you to define rules for sharing resources
-     *                 between origins.
+     * List of origins allowed to access API resources.
+     * Only requests from these domains will be accepted.
      */
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("*").allowedMethods(
-            HttpMethod.GET.name(),
-            HttpMethod.POST.name(),
-            HttpMethod.PUT.name(),
-            HttpMethod.DELETE.name(),
-            HttpMethod.OPTIONS.name(),
-            HttpMethod.HEAD.name(),
-            HttpMethod.PATCH.name()
-        );
+    private static final List<String> ORIGINS = List.of(
+        "http://localhost:4200",
+        "http://localhost:4321",
+        "http://localhost:5173"
+    );
+    
+    /**
+     * List of HTTP methods allowed in API requests.
+     * Requests using other methods will be rejected by the CORS policy.
+     */
+    private static final List<String> METHODS = List.of(
+        HttpMethod.GET.name(),
+        HttpMethod.POST.name(),
+        HttpMethod.PUT.name(),
+        HttpMethod.DELETE.name(),
+        HttpMethod.PATCH.name()
+    );
+    
+    
+    /**
+     * List of allowed headers that clients can include in their API requests.
+     * Any header not listed here may be rejected by CORS policy.
+     */
+    private static final List<String> HEADERS = List.of(
+        HttpHeaders.AUTHORIZATION,
+        HttpHeaders.CONTENT_TYPE,
+        HttpHeaders.ACCEPT
+    );
+    
+    /**
+     * Defines the CORS configuration source for the application.
+     * This bean configures the CORS policies that will be applied to incoming requests to routes
+     * under the pattern "/api/**"
+     *
+     * @return {@link CorsConfigurationSource} configured with the origins, methods,
+     * allowed headers, credential enablement, and maximum preflight response time (in seconds).
+     */
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfig = new CorsConfiguration();
+        
+        corsConfig.setAllowedOrigins(ORIGINS);
+        corsConfig.setAllowedMethods(METHODS);
+        corsConfig.setAllowedHeaders(HEADERS);
+        corsConfig.setAllowCredentials(true);
+        corsConfig.setMaxAge(3600L);
+        
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/api/**", corsConfig);
+        
+        return source;
     }
 }
