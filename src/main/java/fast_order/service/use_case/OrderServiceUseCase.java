@@ -9,12 +9,9 @@ public interface OrderServiceUseCase {
     
     OrderTO findOrderById(Long id);
     
-    //Crear un pedido: validar existencia de productos y stock suficiente.
     OrderTO createOrder(OrderTO order);
     
-    // Modificar pedido: ajustar cantidades y stock
     OrderTO updateOrder(Long id, OrderTO order);
     
-    // Cancelar pedido: restaurar stock.
     String cancelOrder(Long id);
 }
