@@ -1,4 +1,4 @@
-package fast_order.service.kafka.use_case;
+package fast_order.service.use_case;
 
 import fast_order.dto.KafkaNotificationTO;
 

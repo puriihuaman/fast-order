@@ -1,6 +1,6 @@
 package fast_order.exception;
 
-import fast_order.enums.APIError;
+import fast_order.commons.enums.APIError;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 

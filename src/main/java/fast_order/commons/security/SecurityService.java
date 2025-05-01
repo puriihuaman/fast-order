@@ -1,6 +1,7 @@
-package fast_order.security;
+package fast_order.commons.security;
 
 import fast_order.dto.AuthTO;
+import fast_order.dto.TokenResponseTO;
 import fast_order.dto.UserTO;
 import fast_order.service.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,11 +28,11 @@ public class SecurityService {
         this.jwtUtil = jwtUtil;
     }
     
-    public TokenResponse authenticate(AuthTO auth) {
+    public TokenResponseTO authenticate(AuthTO auth) {
         try {
             UsernamePasswordAuthenticationToken
                 authRequest =
-                new UsernamePasswordAuthenticationToken(auth.getEmail(), auth.getPassword());
+                new UsernamePasswordAuthenticationToken(auth.email(), auth.password());
             Authentication authResult = authManager.authenticate(authRequest);
             
             UserDetails userDetails = (UserDetails) authResult.getPrincipal();
@@ -40,7 +41,7 @@ public class SecurityService {
             String token = jwtUtil.generateToken(existingUser);
             String role = jwtUtil.getRoleById(existingUser.getRoleId());
             
-            return new TokenResponse(token, existingUser.getName(), role);
+            return new TokenResponseTO(token, existingUser.getName(), role);
         } catch (BadCredentialsException ex) {
             throw new BadCredentialsException(ex.getMessage());
         } catch (Exception ex) {

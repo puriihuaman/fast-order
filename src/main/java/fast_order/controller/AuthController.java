@@ -2,13 +2,13 @@ package fast_order.controller;
 
 import fast_order.dto.AuthTO;
 import fast_order.dto.UserTO;
-import fast_order.enums.APISuccess;
-import fast_order.security.SecurityService;
-import fast_order.security.TokenResponse;
+import fast_order.commons.enums.APISuccess;
+import fast_order.commons.security.SecurityService;
+import fast_order.dto.TokenResponseTO;
 import fast_order.service.UserService;
 import fast_order.utils.APIResponseData;
 import fast_order.utils.APIResponseHandler;
-import fast_order.annotation.SwaggerApiResponses;
+import fast_order.commons.annotation.SwaggerApiResponses;
 import fast_order.utils.SwaggerResponseExample;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -72,15 +72,15 @@ public class AuthController {
         description = "Authentication successful",
         content = @Content(
             mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(implementation = TokenResponse.class),
+            schema = @Schema(implementation = TokenResponseTO.class),
             examples = {@ExampleObject(
                 value = SwaggerResponseExample.EXAMPLE_GET_RESOURCE_WITH_TOKEN
             )}
         )
     )
     @PostMapping("login")
-    public ResponseEntity<TokenResponse> authenticate(@Valid @RequestBody AuthTO auth) {
-        TokenResponse tokenResponse = securityService.authenticate(auth);
+    public ResponseEntity<TokenResponseTO> authenticate(@Valid @RequestBody AuthTO auth) {
+        TokenResponseTO tokenResponse = securityService.authenticate(auth);
         return ResponseEntity.ok(tokenResponse);
     }
     

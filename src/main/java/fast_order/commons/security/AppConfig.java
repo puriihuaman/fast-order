@@ -1,8 +1,10 @@
-package fast_order.security;
+package fast_order.commons.security;
 
+import fast_order.commons.enums.APIError;
 import fast_order.dto.RoleTO;
 import fast_order.dto.UserTO;
 import fast_order.entity.UserEntity;
+import fast_order.exception.APIRequestException;
 import fast_order.mapper.UserMapper;
 import fast_order.repository.UserRepository;
 import fast_order.service.RoleService;
@@ -43,7 +45,10 @@ public class AppConfig {
                 userRepository.findUserByEmail(username.toLowerCase());
             
             if (existingUser.isEmpty()) {
-                throw new RuntimeException("User not found");
+                APIError.RECORD_NOT_FOUND.setTitle("Usuario no encontrado");
+                APIError.RECORD_NOT_FOUND.setMessage("El usuario que estas buscando no existe.");
+                
+                throw new APIRequestException(APIError.RECORD_NOT_FOUND);
             }
             
             UserTO user = userMapper.toDTO(existingUser.get());
@@ -52,12 +57,11 @@ public class AppConfig {
             
             SimpleGrantedAuthority role = new SimpleGrantedAuthority(roleName);
             
-            return User
-                .builder()
-                .username(user.getEmail())
-                .password(user.getPassword())
-                .authorities(role)
-                .build();
+            return User.builder()
+                       .username(user.getEmail())
+                       .password(user.getPassword())
+                       .authorities(role)
+                       .build();
         };
     }
     

@@ -1,7 +1,7 @@
 package fast_order.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fast_order.enums.RoleType;
+import fast_order.commons.enums.RoleType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -26,7 +26,7 @@ import lombok.Setter;
  */
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @Getter
 @Setter
 @Schema(

@@ -1,7 +1,7 @@
 package fast_order.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fast_order.enums.OrderStatus;
+import fast_order.commons.enums.OrderStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
  */
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @Getter
 @Setter
 @Schema(name = "Order", description = "DTO that represents an order registered in the system.")

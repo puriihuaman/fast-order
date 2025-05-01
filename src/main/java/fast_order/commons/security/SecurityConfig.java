@@ -1,6 +1,6 @@
-package fast_order.security;
+package fast_order.commons.security;
 
-import fast_order.enums.RoleType;
+import fast_order.commons.enums.RoleType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

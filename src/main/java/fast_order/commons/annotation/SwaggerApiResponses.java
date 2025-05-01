@@ -1,4 +1,4 @@
-package fast_order.annotation;
+package fast_order.commons.annotation;
 
 import fast_order.dto.ErrorResponseTO;
 import io.swagger.v3.oas.annotations.media.Content;

@@ -1,6 +1,6 @@
-package fast_order.security;
+package fast_order.commons.security;
 
-import fast_order.enums.APIError;
+import fast_order.commons.enums.APIError;
 import fast_order.exception.APIRequestException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

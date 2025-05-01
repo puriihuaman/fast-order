@@ -2,8 +2,8 @@ package fast_order.service;
 
 import fast_order.dto.RoleTO;
 import fast_order.entity.RoleEntity;
-import fast_order.enums.APIError;
-import fast_order.enums.RoleType;
+import fast_order.commons.enums.APIError;
+import fast_order.commons.enums.RoleType;
 import fast_order.exception.APIRequestException;
 import fast_order.mapper.RoleMapper;
 import fast_order.repository.RoleRepository;

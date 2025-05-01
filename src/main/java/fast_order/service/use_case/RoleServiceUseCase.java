@@ -1,7 +1,7 @@
 package fast_order.service.use_case;
 
 import fast_order.dto.RoleTO;
-import fast_order.enums.RoleType;
+import fast_order.commons.enums.RoleType;
 
 import java.util.List;
 

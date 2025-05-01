@@ -3,11 +3,11 @@ package fast_order.controller;
 import fast_order.dto.PriceUpdateTO;
 import fast_order.dto.ProductTO;
 import fast_order.dto.StockUpdateTO;
-import fast_order.enums.APISuccess;
+import fast_order.commons.enums.APISuccess;
 import fast_order.service.ProductService;
 import fast_order.utils.APIResponseData;
 import fast_order.utils.APIResponseHandler;
-import fast_order.annotation.SwaggerApiResponses;
+import fast_order.commons.annotation.SwaggerApiResponses;
 import fast_order.utils.SwaggerResponseExample;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -349,7 +349,7 @@ public class ProductController {
         @Valid @RequestBody StockUpdateTO amount
     )
     {
-        ProductTO updatedProductStock = productService.updateProductStock(id, amount.getAmount());
+        ProductTO updatedProductStock = productService.updateProductStock(id, amount.amount());
         APISuccess.RESOURCE_UPDATED.setMessage("Product stock successfully increased.");
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_UPDATED, updatedProductStock);
     }

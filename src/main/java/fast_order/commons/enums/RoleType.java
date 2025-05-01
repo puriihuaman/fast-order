@@ -1,4 +1,4 @@
-package fast_order.enums;
+package fast_order.commons.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
