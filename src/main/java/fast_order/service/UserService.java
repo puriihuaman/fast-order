@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService implements UserServiceUseCase {
@@ -53,7 +54,7 @@ public class UserService implements UserServiceUseCase {
     }
     
     @Override
-    public UserTO findUserById(Long id) {
+    public UserTO findUserById(UUID id) {
         try {
             Optional<UserEntity> user = userRepository.findById(id);
             
@@ -138,7 +139,7 @@ public class UserService implements UserServiceUseCase {
     }
     
     @Override
-    public UserTO updateUser(Long id, UserTO user) {
+    public UserTO updateUser(UUID id, UserTO user) {
         try {
             UserTO existingUser = this.findUserById(id);
             
@@ -169,7 +170,7 @@ public class UserService implements UserServiceUseCase {
     }
     
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(UUID id) {
         try {
             UserTO existingUser = this.findUserById(id);
             userRepository.deleteById(existingUser.getId());

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/topics")
 public class KafkaController {
@@ -24,7 +26,7 @@ public class KafkaController {
     public ResponseEntity<APIResponseData> sendMessage(@RequestParam String message) {
         KafkaNotificationTO
             notification =
-            KafkaNotificationTO.builder().message(message).orderId(1L).build();
+            KafkaNotificationTO.builder().message(message).orderId(UUID.randomUUID()).build();
         producerService.sendNotification(notification);
         
         APISuccess.RESOURCE_RETRIEVED.setMessage("The topic was sent successfully.");

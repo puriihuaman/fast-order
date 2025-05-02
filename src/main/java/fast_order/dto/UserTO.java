@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 /**
  * Data Transfer Object (DTO) that represents a user registered in the system.
@@ -39,7 +40,7 @@ public class UserTO {
         hidden = true
     )
     @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
-    private Long id;
+    private UUID id;
     
     @Schema(
         description = "User's full name. Letters and spaces are allowed. Minimum 2 characters.",
@@ -92,5 +93,5 @@ public class UserTO {
     )
     @NotNull(message = "{user.roleId}")
     @JsonProperty(value = "roleId")
-    private Long roleId;
+    private UUID roleId;
 }

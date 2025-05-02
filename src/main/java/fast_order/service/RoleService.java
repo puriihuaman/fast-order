@@ -1,9 +1,9 @@
 package fast_order.service;
 
-import fast_order.dto.RoleTO;
-import fast_order.entity.RoleEntity;
 import fast_order.commons.enums.APIError;
 import fast_order.commons.enums.RoleType;
+import fast_order.dto.RoleTO;
+import fast_order.entity.RoleEntity;
 import fast_order.exception.APIRequestException;
 import fast_order.mapper.RoleMapper;
 import fast_order.repository.RoleRepository;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class RoleService implements RoleServiceUseCase {
@@ -38,7 +39,7 @@ public class RoleService implements RoleServiceUseCase {
     }
     
     @Override
-    public RoleTO findRoleById(Long id) {
+    public RoleTO findRoleById(UUID id) {
         try {
             Optional<RoleEntity> roleEntity = roleRepository.findById(id);
             
@@ -94,18 +95,20 @@ public class RoleService implements RoleServiceUseCase {
             } else {
                 return roleMapper.toDTO(existingRole.get());
             }
+        } catch (APIRequestException ex) {
+            throw ex;
         } catch (DataIntegrityViolationException ex) {
             Throwable cause = ex.getCause();
             Throwable rootCause = cause.getCause();
             if (cause instanceof ConstraintViolationException ||
-                rootCause instanceof ConstraintViolationException) throw new RuntimeException(
-                "UNIQUE_CONSTRAINT_VIOLATION");
-            else throw new RuntimeException("RESOURCE_ASSOCIATED_EXCEPTION");
+                rootCause instanceof ConstraintViolationException) throw new APIRequestException(
+                APIError.UNIQUE_CONSTRAINT_VIOLATION);
+            else throw new APIRequestException(APIError.RESOURCE_ASSOCIATED_EXCEPTION);
             
         } catch (DataAccessException ex) {
-            throw new RuntimeException("Error access database");
+            throw new APIRequestException(APIError.DATABASE_ERROR);
         } catch (Exception ex) {
-            throw new RuntimeException(ex.getMessage());
+            throw new APIRequestException(APIError.INTERNAL_SERVER_ERROR);
         }
     }
 }

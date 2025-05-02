@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * REST controller for role management.
@@ -110,7 +111,7 @@ public class RoleController {
         )
     )
     @GetMapping("id/{id}")
-    public ResponseEntity<APIResponseData> findRoleById(@PathVariable("id") Long id) {
+    public ResponseEntity<APIResponseData> findRoleById(@PathVariable("id") UUID id) {
         RoleTO role = roleService.findRoleById(id);
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, role);
     }

@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * REST controller for user management.
@@ -37,7 +38,7 @@ import java.util.List;
  * - Gets a list of all users.
  * - Get a user by an ID.
  * - Get a user through their email.
- * - Register new user in the system.
+ * - Register a new user in the system.
  * - Updates an existing user in the system.
  * - Delete a user in the system.
  * *
@@ -82,12 +83,12 @@ public class UserController {
     }
     
     /**
-     * Search for specific user by its unique ID.
+     * Search for a specific user by its unique ID.
      * @param id Unique user identifier (required)
      * @return ResponseEntity with data from the user found.
      * *
      * @see UserTO User data structure.
-     * @see UserService#findUserById(Long)
+     * @see UserService#findUserById(UUID)
      */
     @Operation(
         summary = "Get user",
@@ -115,7 +116,7 @@ public class UserController {
         )
     )
     @GetMapping("id/{id}")
-    public ResponseEntity<APIResponseData> findUserById(@PathVariable("id") Long id) {
+    public ResponseEntity<APIResponseData> findUserById(@PathVariable("id") UUID id) {
         UserTO user = userService.findUserById(id);
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, user);
     }
@@ -193,7 +194,7 @@ public class UserController {
      * @return ResponseEntity with the updated user.
      * *
      * @see UserTO User data structure.
-     * @see UserService#updateUser(Long, UserTO)
+     * @see UserService#updateUser(UUID, UserTO)
      */
     @Operation(
         summary = "Update user",
@@ -222,7 +223,7 @@ public class UserController {
     )
     @PutMapping("update/{id}")
     public ResponseEntity<APIResponseData> updateUser(
-        @PathVariable("id") Long id,
+        @PathVariable("id") UUID id,
         @Valid @RequestBody UserTO user
     )
     {
@@ -235,7 +236,7 @@ public class UserController {
      * @param id Unique identifier of the user to be updated.
      * @return Empty ResponseEntity with code 204.
      * *
-     * @see UserService#deleteUser(Long)
+     * @see UserService#deleteUser(UUID)
      */
     @Operation(
         summary = "Delete user",
@@ -263,7 +264,7 @@ public class UserController {
         )
     )
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<APIResponseData> deleteUser(@PathVariable("id") Long id) {
+    public ResponseEntity<APIResponseData> deleteUser(@PathVariable("id") UUID id) {
         userService.deleteUser(id);
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_REMOVED, null);
     }

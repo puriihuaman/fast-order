@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class OrderService implements OrderServiceUseCase {
@@ -62,7 +63,7 @@ public class OrderService implements OrderServiceUseCase {
     }
     
     @Override
-    public OrderTO findOrderById(Long id) {
+    public OrderTO findOrderById(UUID id) {
         try {
             Optional<OrderEntity> orderExisting = orderRepository.findById(id);
             
@@ -129,7 +130,7 @@ public class OrderService implements OrderServiceUseCase {
     }
     
     @Override
-    public OrderTO updateOrder(Long id, OrderTO order) {
+    public OrderTO updateOrder(UUID id, OrderTO order) {
         try {
             OrderTO existingOrder = this.findOrderById(id);
             
@@ -166,10 +167,10 @@ public class OrderService implements OrderServiceUseCase {
     }
     
     @Override
-    public String cancelOrder(Long id) {
+    public String cancelOrder(UUID id) {
         try {
             OrderTO existingOrder = this.findOrderById(id);
-            ProductTO existingProduct = productService.findProductById(id);
+            ProductTO existingProduct = productService.findProductById(existingOrder.getProductId());
             
             existingOrder.setStatus(OrderStatus.CANCELLED);
             int affectedRecords = orderRepository.cancelOrder(

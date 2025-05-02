@@ -17,6 +17,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
@@ -98,7 +99,7 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
     
-    public String getRoleById(Long id) {
+    public String getRoleById(UUID id) {
         RoleTO role = roleService.findRoleById(id);
         return role.getRoleName().name();
     }
