@@ -5,15 +5,14 @@ import fast_order.commons.enums.RoleType;
 import fast_order.dto.RoleTO;
 import fast_order.dto.UserTO;
 import fast_order.exception.APIRequestException;
+import fast_order.service.DataInitializerService;
 import fast_order.service.RoleService;
-import fast_order.service.UserService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 
 /**
@@ -32,18 +31,17 @@ import java.util.Arrays;
  */
 @Component
 public class DataInitializer {
-    private final UserService userService;
     private final RoleService roleService;
+    private final DataInitializerService dataInitializerService;
     
     @Value("${DEFAULT_USER_PASSWORD}")
     private String USER_PASSWORD;
     @Value("${DEFAULT_USER_EMAIL}")
     private String USER_EMAIL;
     
-    public DataInitializer(UserService userService, RoleService roleService)
-    {
-        this.userService = userService;
+    public DataInitializer(RoleService roleService, DataInitializerService dataInitializerService) {
         this.roleService = roleService;
+        this.dataInitializerService = dataInitializerService;
     }
     
     /**
@@ -94,18 +92,16 @@ public class DataInitializer {
      */
     private void createAdminUser() {
         try {
-            RoleTO existingRole = roleService.findRoleByRoleName(RoleType.ADMIN);
+            String name = "Bytes Colaborativos";
+            String email = USER_EMAIL;
+            String password = USER_PASSWORD;
             
-            UserTO user = UserTO.builder()
-                                .name("Bytes Colaborativos")
-                                .email(USER_EMAIL)
-                                .password(USER_PASSWORD)
-                                .signUpDate(LocalDate.now())
-                                .totalSpent(0.0)
-                                .roleId(existingRole.getId())
-                                .build();
-            
-            UserTO userCreated = userService.createUser(user);
+            UserTO userCreated = dataInitializerService.createInitialUser(
+                name,
+                email,
+                password,
+                RoleType.ADMIN
+            );
             this.logCreationDetails(userCreated);
         } catch (APIRequestException ex) {
             throw ex;

@@ -62,13 +62,13 @@ public class UserEntity {
     @NotNull(message = "{field.null}")
     @FutureOrPresent(message = "{user.signUpDate}")
     @Column(name = "sign_up_date", nullable = false)
-    private LocalDate signUpDate;
+    private LocalDate signUpDate = LocalDate.now();
     
     @NotNull(message = "{field.null}")
     @DecimalMin(value = "0.0", message = "{user.min.totalSpent}")
     @PositiveOrZero(message = "{user.totalSpent.positive}")
     @Column(name = "total_spent", nullable = false)
-    private Double totalSpent;
+    private Double totalSpent = 0.0;
     
     @Valid
     @OneToOne(fetch = FetchType.EAGER, optional = false)

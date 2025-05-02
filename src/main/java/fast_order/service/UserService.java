@@ -103,6 +103,14 @@ public class UserService implements UserServiceUseCase {
                 APIError.BAD_REQUEST.setMessage("El ID del rol es requerido");
                 throw new APIRequestException(APIError.BAD_REQUEST);
             }
+            
+            Optional<UserEntity> response = userRepository.findUserByEmail(user.getEmail());
+            if (response.isPresent()) {
+                APIError.BAD_REQUEST.setTitle("El email ya está registrado");
+                APIError.BAD_REQUEST.setMessage("El email ya existe. Por favor verifique su email.");
+                throw new APIRequestException(APIError.BAD_REQUEST);
+            }
+
             UserEntity userEntity = userMapper.toEntity(user);
             
             RoleTO role = roleService.findRoleById(user.getRoleId());
