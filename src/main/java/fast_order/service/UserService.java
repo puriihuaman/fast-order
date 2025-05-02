@@ -1,9 +1,9 @@
 package fast_order.service;
 
+import fast_order.commons.enums.APIError;
 import fast_order.dto.RoleTO;
 import fast_order.dto.UserTO;
 import fast_order.entity.UserEntity;
-import fast_order.commons.enums.APIError;
 import fast_order.exception.APIRequestException;
 import fast_order.mapper.RoleMapper;
 import fast_order.mapper.UserMapper;
@@ -82,7 +82,7 @@ public class UserService implements UserServiceUseCase {
                 APIError.RECORD_NOT_FOUND.setTitle("Usuario no encontrado");
                 APIError.RECORD_NOT_FOUND.setMessage(
                     "El usuario no encontrado. Por favor verifique su email.");
-                throw new RuntimeException("User not found");
+                throw new APIRequestException(APIError.RECORD_NOT_FOUND);
             }
             
             return userMapper.toDTO(user.get());
@@ -105,9 +105,9 @@ public class UserService implements UserServiceUseCase {
             }
             UserEntity userEntity = userMapper.toEntity(user);
             
-            RoleTO roleEntity = roleService.findRoleById(user.getRoleId());
+            RoleTO role = roleService.findRoleById(user.getRoleId());
             
-            userEntity.setRole(roleMapper.toEntity(roleEntity));
+            userEntity.setRole(roleMapper.toEntity(role));
             userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
             
             UserEntity createdUser = userRepository.save(userEntity);

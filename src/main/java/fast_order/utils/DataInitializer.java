@@ -1,9 +1,9 @@
 package fast_order.utils;
 
-import fast_order.dto.RoleTO;
-import fast_order.dto.UserTO;
 import fast_order.commons.enums.APIError;
 import fast_order.commons.enums.RoleType;
+import fast_order.dto.RoleTO;
+import fast_order.dto.UserTO;
 import fast_order.exception.APIRequestException;
 import fast_order.service.RoleService;
 import fast_order.service.UserService;
@@ -94,20 +94,16 @@ public class DataInitializer {
      */
     private void createAdminUser() {
         try {
-            RoleTO
-                role =
-                RoleTO.builder().roleName(RoleType.ADMIN).description("Full system access").build();
-            RoleTO createdRole = roleService.createRole(role);
+            RoleTO existingRole = roleService.findRoleByRoleName(RoleType.ADMIN);
             
-            UserTO user = UserTO
-                .builder()
-                .name("Bytes Colaborativos")
-                .email(USER_EMAIL)
-                .password(USER_PASSWORD)
-                .signUpDate(LocalDate.now())
-                .totalSpent(0.0)
-                .roleId(createdRole.getId())
-                .build();
+            UserTO user = UserTO.builder()
+                                .name("Bytes Colaborativos")
+                                .email(USER_EMAIL)
+                                .password(USER_PASSWORD)
+                                .signUpDate(LocalDate.now())
+                                .totalSpent(0.0)
+                                .roleId(existingRole.getId())
+                                .build();
             
             UserTO userCreated = userService.createUser(user);
             this.logCreationDetails(userCreated);
@@ -126,9 +122,9 @@ public class DataInitializer {
      * @param user Persistent user
      */
     private void logCreationDetails(UserTO user) {
-        System.out.println("--------- USER CREATED ----------");
+        System.out.println("--------- START: CREATING USER ----------");
         System.out.println(user.getId());
         System.out.println(user.getEmail());
-        System.out.println("--------- USER CREATED ----------");
+        System.out.println("--------- END: USER CREATED ----------");
     }
 }
