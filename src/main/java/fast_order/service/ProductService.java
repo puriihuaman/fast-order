@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ProductService implements ProductServiceUseCase {
@@ -39,7 +40,7 @@ public class ProductService implements ProductServiceUseCase {
     }
     
     @Override
-    public ProductTO findProductById(Long id) {
+    public ProductTO findProductById(UUID id) {
         try {
             Optional<ProductEntity> existingProduct = productRepository.findById(id);
             
@@ -106,7 +107,7 @@ public class ProductService implements ProductServiceUseCase {
     }
     
     @Override
-    public ProductTO updateProduct(Long id, ProductTO product) {
+    public ProductTO updateProduct(UUID id, ProductTO product) {
         try {
             ProductTO existingProduct = this.findProductById(id);
             
@@ -136,7 +137,7 @@ public class ProductService implements ProductServiceUseCase {
     }
     
     @Override
-    public void deleteProduct(Long id) {
+    public void deleteProduct(UUID id) {
         try {
             ProductTO existingProduct = this.findProductById(id);
             
@@ -158,7 +159,7 @@ public class ProductService implements ProductServiceUseCase {
     }
     
     @Override
-    public ProductTO updateProductPrice(Long id, PriceUpdateTO newPrice) {
+    public ProductTO updateProductPrice(UUID id, PriceUpdateTO newPrice) {
         try {
             ProductTO existingProduct = this.findProductById(id);
             
@@ -185,7 +186,7 @@ public class ProductService implements ProductServiceUseCase {
     }
     
     @Override
-    public ProductTO updateProductStock(Long id, Integer amount) {
+    public ProductTO updateProductStock(UUID id, Integer amount) {
         try {
             ProductTO existingProduct = this.findProductById(id);
             
@@ -209,7 +210,7 @@ public class ProductService implements ProductServiceUseCase {
     }
     
     @Override
-    public void decreaseProductStock(Long id, Integer amount) {
+    public void decreaseProductStock(UUID id, Integer amount) {
         try {
             ProductTO existingProduct = this.findProductById(id);
             

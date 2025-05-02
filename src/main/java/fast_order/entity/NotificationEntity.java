@@ -14,6 +14,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity(name = "NOTIFICATION")
 @Table(name = "NOTIFICATION", schema = "fast_order_schema")
@@ -24,15 +25,15 @@ import java.time.LocalDateTime;
 @Setter
 public class NotificationEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "notification_id", unique = true)
-    private Long id;
+    private UUID id;
     
     @Column(name = "message", updatable = false)
     private String message;
     
     @Column(name = "order_id", updatable = false)
-    private Long orderId;
+    private UUID orderId;
     
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

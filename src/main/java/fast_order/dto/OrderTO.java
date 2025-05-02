@@ -16,11 +16,12 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 /**
  * Data Transfer Object (DTO) to represent order information.
  * -
- * Contains information about the order, including its status, relationships to other entities, and
+ * Contains information about the order, including its status, relationships to other entities and
  * validation constraint.
  * It is used to transfer data between application layers (example: between the controller and the
  * service) or in API responses.
@@ -37,18 +38,19 @@ import java.time.LocalDateTime;
 @Schema(name = "Order", description = "DTO that represents an order registered in the system.")
 public class OrderTO {
     @Schema(description = "Unique order ID.", example = "1")
-    @JsonProperty(value = "order_id", access = JsonProperty.Access.READ_ONLY)
-    private Long id;
+    @JsonProperty(value = "orderId", access = JsonProperty.Access.READ_ONLY)
+    private UUID id;
     
     @Schema(
         description = "Quantity of the product in the order. Must be greater than zero.",
         example = "10", requiredMode = Schema.RequiredMode.REQUIRED
     )
     @NotNull(message = "{field.null}")
-    @Min(value = 0, message = "{order.amount.min}")
+    @Min(value = 1, message = "{order.amount.min}")
     @Positive(message = "{order.amount.positive}")
+    @Builder.Default
     @JsonProperty(value = "amount")
-    private Integer amount;
+    private Integer amount = 1;
     
     @Schema(
         description = "ID of the user placen the order. Related to the 'User' entity.",
@@ -56,7 +58,7 @@ public class OrderTO {
     )
     @NotNull(message = "{order.user.id}")
     @JsonProperty(value = "userId")
-    private Long userId;
+    private UUID userId;
     
     @Schema(
         description = "Product ID associated with the order. Related to the 'Product' entity.",
@@ -64,12 +66,13 @@ public class OrderTO {
     )
     @NotNull(message = "{order.product.id}")
     @JsonProperty(value = "productId")
-    private Long productId;
+    private UUID productId;
     
     @Schema(
         description = "Current status of the order.",
         examples = {"PENDING", "FINISHED", "CANCELLED"}, defaultValue = "PENDING"
     )
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @JsonProperty(value = "status")
     private OrderStatus status = OrderStatus.PENDING;

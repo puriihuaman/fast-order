@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,5 +19,5 @@ public class KafkaNotificationTO {
     private String message;
     
     @JsonProperty(value = "orderId")
-    private Long orderId;
+    private UUID orderId;
 }

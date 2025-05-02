@@ -15,6 +15,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 /**
  * Data Transfer Object (DTO) representing a product registered in the system.
  * -
@@ -43,7 +45,7 @@ public class ProductTO {
         description = "Unique product ID.", example = "1", accessMode = Schema.AccessMode.READ_ONLY
     )
     @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
-    private Long id;
+    private UUID id;
     
     @Schema(
         description = "Unique product name.", example = "Laptop Apple M1",
@@ -59,6 +61,7 @@ public class ProductTO {
         description = "Quantity available in product inventory.", example = "5",
         requiredMode = Schema.RequiredMode.REQUIRED
     )
+    @Builder.Default
     @NotNull(message = "{field.null}")
     @PositiveOrZero(message = "{product.stock.positive}")
     @Min(value = 0, message = "{product.stock.min}")

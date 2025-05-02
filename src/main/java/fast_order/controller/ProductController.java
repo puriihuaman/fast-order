@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * REST controller for product management.
@@ -92,7 +93,7 @@ public class ProductController {
      * @return ResponseEntity with data from the product found.
      * *
      * @see ProductTO Product data structure.
-     * @see ProductService#findProductById(Long)
+     * @see ProductService#findProductById(UUID)
      */
     @Operation(
         summary = "Get a product",
@@ -118,7 +119,7 @@ public class ProductController {
         )
     )
     @GetMapping("id/{id}")
-    public ResponseEntity<APIResponseData> findProductById(@PathVariable("id") Long id) {
+    public ResponseEntity<APIResponseData> findProductById(@PathVariable("id") UUID id) {
         ProductTO product = productService.findProductById(id);
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, product);
     }
@@ -196,7 +197,7 @@ public class ProductController {
      * @return ResponseEntity with the updated product.
      * *
      * @see ProductTO Product data structure.
-     * @see ProductService#updateProduct(Long, ProductTO)
+     * @see ProductService#updateProduct(UUID, ProductTO)
      */
     @Operation(
         summary = "Update a product",
@@ -223,7 +224,7 @@ public class ProductController {
     )
     @PutMapping("update/{id}")
     public ResponseEntity<APIResponseData> updateProduct(
-        @PathVariable("id") Long id,
+        @PathVariable("id") UUID id,
         @Valid @RequestBody ProductTO product
     )
     {
@@ -236,7 +237,7 @@ public class ProductController {
      * @param id Unique identifier of the product to be removed.
      * @return Empty ResponseEntity with code 204.
      * *
-     * @see ProductService#deleteProduct(Long)
+     * @see ProductService#deleteProduct(UUID)
      */
     @Operation(
         summary = "Delete a product",
@@ -262,7 +263,7 @@ public class ProductController {
         )
     )
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<APIResponseData> deleteProduct(@PathVariable("id") Long id) {
+    public ResponseEntity<APIResponseData> deleteProduct(@PathVariable("id") UUID id) {
         productService.deleteProduct(id);
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_REMOVED, null);
     }
@@ -274,7 +275,7 @@ public class ProductController {
      * @return ResponseEntity with the updated product.
      * *
      * @see PriceUpdateTO PriceUpdate data structure.
-     * @see ProductService#updateProductPrice(Long, PriceUpdateTO)
+     * @see ProductService#updateProductPrice(UUID, PriceUpdateTO)
      */
     @Operation(
         summary = "Update the price of a product",
@@ -301,7 +302,7 @@ public class ProductController {
     )
     @PatchMapping("update/price/{id}")
     public ResponseEntity<APIResponseData> updateProductPrice(
-        @PathVariable("id") Long id,
+        @PathVariable("id") UUID id,
         @Valid @RequestBody
         PriceUpdateTO price
     )
@@ -318,7 +319,7 @@ public class ProductController {
      * @return ResponseEntity with the updated product
      * *
      * @see StockUpdateTO StockUpdate data structure.
-     * @see ProductService#updateProductStock(Long, Integer)
+     * @see ProductService#updateProductStock(UUID, Integer)
      */
     @Operation(
         summary = "Increase the stock of a product",
@@ -345,7 +346,7 @@ public class ProductController {
     )
     @PatchMapping("update/stock/{id}")
     public ResponseEntity<APIResponseData> updateProductStock(
-        @PathVariable("id") Long id,
+        @PathVariable("id") UUID id,
         @Valid @RequestBody StockUpdateTO amount
     )
     {
