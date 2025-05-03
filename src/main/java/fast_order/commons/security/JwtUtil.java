@@ -69,10 +69,12 @@ public class JwtUtil {
     
     public String generateToken(UserTO userTO) {
         final String ROLE_PREFIX = "ROLE_";
+        String roleName = this.getRoleById(userTO.getRoleId());
+        
         Map<String, Object> claims = new HashMap<>();
         claims.put("name", userTO.getName());
         claims.put("email", userTO.getEmail());
-        claims.put("role", ROLE_PREFIX + this.getRoleById(userTO.getId()));
+        claims.put("role", ROLE_PREFIX + roleName);
         return this.buildToken(claims, userTO.getEmail());
     }
     
