@@ -77,7 +77,7 @@ public class UserController {
         )
     )
     @GetMapping("all")
-    public ResponseEntity<APIResponseData> findAllUsers() {
+    public ResponseEntity<APIResponseData<List<UserTO>>> findAllUsers() {
         List<UserTO> users = userService.findAllUsers();
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, users);
     }
@@ -116,7 +116,7 @@ public class UserController {
         )
     )
     @GetMapping("id/{id}")
-    public ResponseEntity<APIResponseData> findUserById(@PathVariable("id") UUID id) {
+    public ResponseEntity<APIResponseData<UserTO>> findUserById(@PathVariable("id") UUID id) {
         UserTO user = userService.findUserById(id);
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, user);
     }
@@ -155,7 +155,7 @@ public class UserController {
         )
     )
     @GetMapping("email/{email}")
-    public ResponseEntity<APIResponseData> findUserByEmail(@PathVariable("email") String email) {
+    public ResponseEntity<APIResponseData<UserTO>> findUserByEmail(@PathVariable("email") String email) {
         UserTO user = userService.findUserByEmail(email);
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, user);
     }
@@ -182,7 +182,7 @@ public class UserController {
         )
     )
     @PostMapping("create")
-    public ResponseEntity<APIResponseData> createUser(@Valid @RequestBody UserTO user) {
+    public ResponseEntity<APIResponseData<UserTO>> createUser(@Valid @RequestBody UserTO user) {
         UserTO createdUser = userService.createUser(user);
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_CREATED, createdUser);
     }
@@ -222,7 +222,7 @@ public class UserController {
         )
     )
     @PutMapping("update/{id}")
-    public ResponseEntity<APIResponseData> updateUser(
+    public ResponseEntity<APIResponseData<UserTO>> updateUser(
         @PathVariable("id") UUID id,
         @Valid @RequestBody UserTO user
     )
@@ -264,8 +264,8 @@ public class UserController {
         )
     )
     @DeleteMapping("delete/{id}")
-    public ResponseEntity<APIResponseData> deleteUser(@PathVariable("id") UUID id) {
+    public ResponseEntity<APIResponseData<Void>> deleteUser(@PathVariable("id") UUID id) {
         userService.deleteUser(id);
-        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_REMOVED, null);
+        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_REMOVED, (Void) null);
     }
 }

@@ -76,7 +76,7 @@ public class OrderController {
         )
     )
     @GetMapping("all")
-    public ResponseEntity<APIResponseData> findAllOrders() {
+    public ResponseEntity<APIResponseData<List<OrderTO>>> findAllOrders() {
         List<OrderTO> orders = orderService.findAllOrders();
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, orders);
     }
@@ -113,7 +113,7 @@ public class OrderController {
         )
     )
     @GetMapping("id/{id}")
-    public ResponseEntity<APIResponseData> findOrderById(@PathVariable("id") UUID id) {
+    public ResponseEntity<APIResponseData<OrderTO>> findOrderById(@PathVariable("id") UUID id) {
         OrderTO order = orderService.findOrderById(id);
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, order);
     }
@@ -142,7 +142,7 @@ public class OrderController {
         )
     )
     @PostMapping("create")
-    public ResponseEntity<APIResponseData> createOrder(@Valid @RequestBody OrderTO order) {
+    public ResponseEntity<APIResponseData<OrderTO>> createOrder(@Valid @RequestBody OrderTO order) {
         OrderTO createdOrder = orderService.createOrder(order);
         
         APISuccess.RESOURCE_RETRIEVED.setMessage("Order created successfully.");
@@ -183,7 +183,7 @@ public class OrderController {
         )
     )
     @PutMapping("update/{id}")
-    public ResponseEntity<APIResponseData> updateOrder(
+    public ResponseEntity<APIResponseData<OrderTO>> updateOrder(
         @PathVariable("id") UUID id,
         @Valid @RequestBody OrderTO order
     )
@@ -226,11 +226,11 @@ public class OrderController {
         )
     )
     @PatchMapping("cancel/{id}")
-    public ResponseEntity<APIResponseData> cancelOrder(@PathVariable("id") UUID id) {
+    public ResponseEntity<APIResponseData<Void>> cancelOrder(@PathVariable("id") UUID id) {
         String responseText = orderService.cancelOrder(id);
         
         APISuccess.RESOURCE_RETRIEVED.setMessage(responseText);
         
-        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, null);
+        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, (Void)null);
     }
 }

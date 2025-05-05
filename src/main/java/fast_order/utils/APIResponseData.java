@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Standardized response format for successful API operations.
@@ -16,29 +17,27 @@ import java.time.LocalDateTime;
  */
 @Getter
 @Schema(
-    name = "APIResponseData",
-    description = """
-                  DTO representing a standard successful API response.
-                  It contains the operation result, status, and response metadata.
-                  """,
-    example = """
-              {
-                "data": {
-                  "name": "Jorge Suarez",
-                  "email": "jorge@gmail.com",
-                  "password": "XSS.XSS.XSS....XSS",
-                  "signUpDate": "2025-04-12",
-                  "totalSpent": 150.5,
-                  "roleId": 2
-                },
-                "hasError": false,
-                "message": "Resource successfully recovered.",
-                "statusCode": 200,
-                "timestamp": "2025-04-13T15:42:00"
-              }
-              """
+    name = "APIResponseData", description = """
+                                            DTO representing a standard successful API response.
+                                            It contains the operation result, status, and response metadata.
+                                            """, example = """
+                                                           {
+                                                             "data": {
+                                                               "name": "Jorge Suarez",
+                                                               "email": "jorge@gmail.com",
+                                                               "password": "XSS.XSS.XSS....XSS",
+                                                               "signUpDate": "2025-04-12",
+                                                               "totalSpent": 150.5,
+                                                               "roleId": 2
+                                                             },
+                                                             "hasError": false,
+                                                             "message": "Resource successfully recovered.",
+                                                             "statusCode": 200,
+                                                             "timestamp": "2025-04-13T15:42:00"
+                                                           }
+                                                           """
 )
-public class APIResponseData {
+public class APIResponseData<T> {
     @Schema(
         description = "Object with the requested information or result of the operation.",
         example = """
@@ -70,7 +69,7 @@ public class APIResponseData {
     private final Integer statusCode;
     
     @Schema(
-        description = "Date and time the response is generated.",example = "2025-04-13T15:42:00"
+        description = "Date and time the response is generated.", example = "2025-04-13T15:42:00"
     )
     private final LocalDateTime timestamp = LocalDateTime.now();
     
@@ -80,7 +79,13 @@ public class APIResponseData {
      * @param success APISuccess instance containing the HTTP message and status.
      * @param data    Object with the data resulting from the operation.
      */
-    public APIResponseData(APISuccess success, Object data) {
+    public APIResponseData(APISuccess success, T data) {
+        this.data = data;
+        this.message = success.getMessage();
+        this.statusCode = success.getStatus().value();
+    }
+    
+    public APIResponseData(APISuccess success, List<T> data) {
         this.data = data;
         this.message = success.getMessage();
         this.statusCode = success.getStatus().value();

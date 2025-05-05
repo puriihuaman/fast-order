@@ -74,7 +74,7 @@ public class RoleController {
         )
     )
     @GetMapping("all")
-    public ResponseEntity<APIResponseData> findAllRoles() {
+    public ResponseEntity<APIResponseData<List<RoleTO>>> findAllRoles() {
         List<RoleTO> roles = roleService.findRoles();
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, roles);
     }
@@ -111,7 +111,7 @@ public class RoleController {
         )
     )
     @GetMapping("id/{id}")
-    public ResponseEntity<APIResponseData> findRoleById(@PathVariable("id") UUID id) {
+    public ResponseEntity<APIResponseData<RoleTO>> findRoleById(@PathVariable("id") UUID id) {
         RoleTO role = roleService.findRoleById(id);
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, role);
     }
@@ -148,7 +148,7 @@ public class RoleController {
         )
     )
     @GetMapping("role/{name}")
-    public ResponseEntity<APIResponseData> findRoleByRoleName(@PathVariable("name") RoleType name) {
+    public ResponseEntity<APIResponseData<RoleTO>> findRoleByRoleName(@PathVariable("name") RoleType name) {
         RoleTO role = roleService.findRoleByRoleName(name);
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, role);
     }
@@ -175,7 +175,7 @@ public class RoleController {
         )
     )
     @PostMapping("create")
-    public ResponseEntity<APIResponseData> createRole(@Valid @RequestBody RoleTO role) {
+    public ResponseEntity<APIResponseData<RoleTO>> createRole(@Valid @RequestBody RoleTO role) {
         RoleTO savedRole = roleService.createRole(role);
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_CREATED, savedRole);
     }

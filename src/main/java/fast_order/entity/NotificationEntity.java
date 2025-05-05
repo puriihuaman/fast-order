@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "NOTIFICATION")
-@Table(name = "NOTIFICATION", schema = "fast_order_schema")
+@Table(name = "NOTIFICATIONS", schema = "fast_order_schema")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

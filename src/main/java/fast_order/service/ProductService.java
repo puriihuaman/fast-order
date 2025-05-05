@@ -1,9 +1,9 @@
 package fast_order.service;
 
+import fast_order.commons.enums.APIError;
 import fast_order.dto.PriceUpdateTO;
 import fast_order.dto.ProductTO;
 import fast_order.entity.ProductEntity;
-import fast_order.commons.enums.APIError;
 import fast_order.exception.APIRequestException;
 import fast_order.mapper.ProductMapper;
 import fast_order.repository.ProductRepository;
@@ -12,6 +12,8 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -228,6 +230,15 @@ public class ProductService implements ProductServiceUseCase {
         } catch (Exception ex) {
             throw new APIRequestException(APIError.INTERNAL_SERVER_ERROR);
         }
+    }
+    
+    @Override
+    public Page<ProductTO> findAllProductsPageable(Pageable pageable) {
+        Page<ProductEntity> result = productRepository.findAll(pageable);
+        
+        Page<ProductTO> productTOPage = result.map(productMapper::toDTO);
+        
+        return productTOPage;
     }
     
     

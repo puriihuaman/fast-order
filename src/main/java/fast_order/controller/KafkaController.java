@@ -23,7 +23,7 @@ public class KafkaController {
     }
     
     @GetMapping("send")
-    public ResponseEntity<APIResponseData> sendMessage(@RequestParam String message) {
+    public ResponseEntity<APIResponseData<Object>> sendMessage(@RequestParam String message) {
         KafkaNotificationTO
             notification =
             KafkaNotificationTO.builder().message(message).orderId(UUID.randomUUID()).build();
