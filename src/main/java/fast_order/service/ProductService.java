@@ -39,6 +39,8 @@ public class ProductService implements ProductServiceUseCase {
             Page<ProductEntity> result = productRepository.findAll(spec, pageable);
             
             return result.map(productMapper::toDTO);
+        } catch (APIRequestException ex) {
+            throw ex;
         } catch (DataAccessException ex) {
             throw new APIRequestException(APIError.DATABASE_ERROR);
         } catch (Exception ex) {
