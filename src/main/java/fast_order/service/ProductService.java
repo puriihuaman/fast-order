@@ -8,15 +8,17 @@ import fast_order.exception.APIRequestException;
 import fast_order.mapper.ProductMapper;
 import fast_order.repository.ProductRepository;
 import fast_order.service.use_case.ProductServiceUseCase;
+import fast_order.utils.ProductSpecification;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,9 +33,12 @@ public class ProductService implements ProductServiceUseCase {
     }
     
     @Override
-    public List<ProductTO> findAllProducts() {
+    public Page<ProductTO> findAllProducts(Pageable pageable, Map<String, String> keywords) {
         try {
-            return productMapper.toDTOList(productRepository.findAll());
+            Specification<ProductEntity> spec = ProductSpecification.filterProducts(keywords);
+            Page<ProductEntity> result = productRepository.findAll(spec, pageable);
+            
+            return result.map(productMapper::toDTO);
         } catch (DataAccessException ex) {
             throw new APIRequestException(APIError.DATABASE_ERROR);
         } catch (Exception ex) {
@@ -231,16 +236,6 @@ public class ProductService implements ProductServiceUseCase {
             throw new APIRequestException(APIError.INTERNAL_SERVER_ERROR);
         }
     }
-    
-    @Override
-    public Page<ProductTO> findAllProductsPageable(Pageable pageable) {
-        Page<ProductEntity> result = productRepository.findAll(pageable);
-        
-        Page<ProductTO> productTOPage = result.map(productMapper::toDTO);
-        
-        return productTOPage;
-    }
-    
     
     public Boolean checkStock(ProductTO product, Integer amount) {
         return product.getStock() >= amount;

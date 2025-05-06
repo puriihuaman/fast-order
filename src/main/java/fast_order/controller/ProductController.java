@@ -22,6 +22,8 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -33,9 +35,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -68,11 +71,12 @@ public class ProductController {
     }
     
     /**
-     * Gets all products registered in the system.
+     * Retrieves a paginated list of all products based on specified sorting and filtering criteria.
      *
-     * @return ResponseEntity with a list of products in a standardized format.
-     * *
-     * @see ProductService#findAllProducts()
+     * @param keywords        a map of keywords used for filtering the products
+     * @param sort            an optional array specifying sorting criteria (e.g., ["property,asc", "property,desc"])
+     * @param defaultPageable the default pageable configuration including page size, number, and sorting defaults
+     * @return a ResponseEntity containing the paginated list of products wrapped in APIResponseDataPagination
      */
     @Operation(summary = "Product list", description = "Get a list of all products.")
     @SwaggerApiResponses
@@ -84,10 +88,27 @@ public class ProductController {
     )
     )
     )
-    @GetMapping("all")
-    public ResponseEntity<APIResponseData<List<ProductTO>>> findAllProducts() {
-        List<ProductTO> products = productService.findAllProducts();
-        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, products);
+    @GetMapping()
+    public ResponseEntity<APIResponseDataPagination<ProductTO>> findAllProducts(
+        @RequestParam Map<String, String> keywords,
+        @RequestParam(value = "sort", required = false) String[] sort,
+        @PageableDefault(size = 20) Pageable defaultPageable
+    )
+    {
+        Sort dynamicSort = Sort.unsorted();
+        
+        if (sort != null && sort.length > 0) {
+            dynamicSort = Sort.by(sort);
+        }
+        
+        Pageable pageable = PageRequest.of(
+            defaultPageable.getPageNumber(),
+            defaultPageable.getPageSize(),
+            dynamicSort
+        );
+        
+        Page<ProductTO> page = productService.findAllProducts(pageable, keywords);
+        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, page);
     }
     
     /**
@@ -329,14 +350,5 @@ public class ProductController {
         ProductTO updatedProductStock = productService.updateProductStock(id, amount.amount());
         APISuccess.RESOURCE_UPDATED.setMessage("Product stock successfully increased.");
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_UPDATED, updatedProductStock);
-    }
-    
-    @GetMapping("pages")
-    public ResponseEntity<APIResponseDataPagination<ProductTO>> findAllProductsPageable() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<ProductTO> page = productService.findAllProductsPageable(pageable);
-        
-        APISuccess.RESOURCE_RETRIEVED.setMessage("Paginación de productos.");
-        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, page);
     }
 }
