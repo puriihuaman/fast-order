@@ -106,7 +106,7 @@ public class AuthController {
         )
     )
     @PostMapping("register")
-    public ResponseEntity<APIResponseData> register(@Valid @RequestBody UserTO user) {
+    public ResponseEntity<APIResponseData<UserTO>> register(@Valid @RequestBody UserTO user) {
         UserTO registeredUser = userService.createUser(user);
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_CREATED, registeredUser);
     }

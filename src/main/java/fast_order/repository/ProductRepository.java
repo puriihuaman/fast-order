@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,7 +16,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ProductRepository extends JpaRepository<ProductEntity, UUID> {
+public interface ProductRepository extends JpaRepository<ProductEntity, UUID>,
+    JpaSpecificationExecutor<ProductEntity> {
     Optional<ProductEntity> findProductByName(
         @NotNull(message = "{field.null}") @NotEmpty(message = "{field.empty}")
         @Size(min = 4, max = 60, message = "{product.name.size}") String name

@@ -2,12 +2,14 @@ package fast_order.service.use_case;
 
 import fast_order.dto.PriceUpdateTO;
 import fast_order.dto.ProductTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface ProductServiceUseCase {
-    List<ProductTO> findAllProducts();
+    Page<ProductTO> findAllProducts(Pageable pageable, Map<String, String> keywords);
     
     ProductTO findProductById(UUID id);
     

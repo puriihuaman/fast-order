@@ -1,6 +1,8 @@
 package fast_order.utils;
 
 import fast_order.commons.enums.APISuccess;
+import fast_order.dto.PaginationTO;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 /**
@@ -16,9 +18,33 @@ import org.springframework.http.ResponseEntity;
  * @see APISuccess Predefined HTTP message source and codes
  */
 public class APIResponseHandler {
-    public static ResponseEntity<APIResponseData> handleResponse(APISuccess success, Object data)
+    public static <T> ResponseEntity<APIResponseData<T>> handleResponse(APISuccess success, T data)
     {
-        APIResponseData responseData = new APIResponseData(success, data);
+        APIResponseData<T> responseData = new APIResponseData<>(success, data);
+        return new ResponseEntity<>(responseData, success.getStatus());
+    }
+    
+    public static <T> ResponseEntity<APIResponseDataPagination<T>> handleResponse(
+        APISuccess success,
+        Page<T> page
+    )
+    {
+        PaginationTO pagination = new PaginationTO(
+            page.getPageable().getPageNumber(),
+            page.getPageable().getPageSize(),
+            page.getTotalElements(),
+            page.getTotalPages(),
+            page.isFirst(),
+            page.isLast(),
+            page.getNumberOfElements(),
+            page.getSort().isSorted(),
+            page.getSort().isUnsorted()
+        );
+        APIResponseDataPagination<T> responseData = new APIResponseDataPagination<>(
+            success,
+            pagination,
+            page.getContent()
+        );
         return new ResponseEntity<>(responseData, success.getStatus());
     }
 }
