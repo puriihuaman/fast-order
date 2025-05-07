@@ -41,16 +41,16 @@ public class RoleService implements RoleServiceUseCase {
     @Override
     public RoleTO findRoleById(UUID id) {
         try {
-            Optional<RoleEntity> roleEntity = roleRepository.findById(id);
+            Optional<RoleEntity> response = roleRepository.findById(id);
             
-            if (roleEntity.isEmpty()) {
-                APIError.RECORD_NOT_FOUND.setTitle("Rol no encontrado");
+            if (response.isEmpty()) {
+                APIError.RECORD_NOT_FOUND.setTitle("Role not found");
                 APIError.RECORD_NOT_FOUND.setMessage(
-                    "Al rol al que intentas acceder no existe en el sistema.");
+                    "The role you are trying to access does not exist in the system.");
                 throw new APIRequestException(APIError.RECORD_NOT_FOUND);
             }
             
-            return roleMapper.toDTO(roleEntity.get());
+            return roleMapper.toDTO(response.get());
         } catch (APIRequestException ex) {
             throw ex;
         } catch (DataAccessException ex) {
@@ -63,16 +63,16 @@ public class RoleService implements RoleServiceUseCase {
     @Override
     public RoleTO findRoleByRoleName(RoleType roleName) {
         try {
-            Optional<RoleEntity> existingRole = roleRepository.findRoleByRoleName(roleName);
+            Optional<RoleEntity> response = roleRepository.findRoleByRoleName(roleName);
             
-            if (existingRole.isEmpty()) {
-                APIError.RECORD_NOT_FOUND.setTitle("Rol no encontrado");
+            if (response.isEmpty()) {
+                APIError.RECORD_NOT_FOUND.setTitle("Role not found");
                 APIError.RECORD_NOT_FOUND.setMessage(
-                    "El nombre del rol al que intentas acceder no existe en el sistema.");
-                throw new RuntimeException("Role not found");
+                    "The role name you are trying to access does not exist in the system.");
+                throw new APIRequestException(APIError.RECORD_NOT_FOUND);
             }
             
-            return roleMapper.toDTO(existingRole.get());
+            return roleMapper.toDTO(response.get());
         } catch (APIRequestException ex) {
             throw ex;
         } catch (DataAccessException ex) {

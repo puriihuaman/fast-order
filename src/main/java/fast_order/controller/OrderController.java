@@ -197,7 +197,7 @@ public class OrderController {
     
     /**
      * Cancels an existing order (status changes to CANCELLED).
-     * @param id Unique identifier of the order to be cancelled.
+     * @param id Unique identifier of the order to be canceled.
      * @return ResponseEntity with a confirmation message.
      * *
      * @see OrderService#cancelOrder(UUID)

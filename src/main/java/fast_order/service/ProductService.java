@@ -54,9 +54,9 @@ public class ProductService implements ProductServiceUseCase {
             Optional<ProductEntity> existingProduct = productRepository.findById(id);
             
             if (existingProduct.isEmpty()) {
-                APIError.RECORD_NOT_FOUND.setTitle("Producto no encontrado");
+                APIError.RECORD_NOT_FOUND.setTitle("Product not found");
                 APIError.RECORD_NOT_FOUND.setMessage(
-                    "El producto al que intentas acceder no existe.");
+                    "The product you are trying to access does not exist.");
                 
                 throw new APIRequestException(APIError.RECORD_NOT_FOUND);
             }
@@ -77,9 +77,8 @@ public class ProductService implements ProductServiceUseCase {
             Optional<ProductEntity> existingProduct = productRepository.findProductByName(name);
             
             if (existingProduct.isEmpty()) {
-                APIError.RECORD_NOT_FOUND.setTitle("Producto no encontrado");
-                APIError.RECORD_NOT_FOUND.setMessage(
-                    "Producto no encontrado. Por favor verifique el nombre.");
+                APIError.RECORD_NOT_FOUND.setTitle("Product not found");
+                APIError.RECORD_NOT_FOUND.setMessage("Product not found. Please check the name.");
                 throw new APIRequestException(APIError.RECORD_NOT_FOUND);
             }
             
@@ -178,9 +177,8 @@ public class ProductService implements ProductServiceUseCase {
             );
             
             if (productUpdated == 0) {
-                APIError.INTERNAL_SERVER_ERROR.setTitle("Error al actualizar");
-                APIError.INTERNAL_SERVER_ERROR.setMessage(
-                    "Error al actualizar el precio del producto.");
+                APIError.INTERNAL_SERVER_ERROR.setTitle("Error updating");
+                APIError.INTERNAL_SERVER_ERROR.setMessage("Error updating product price.");
                 throw new APIRequestException(APIError.INTERNAL_SERVER_ERROR);
             }
             
@@ -202,9 +200,8 @@ public class ProductService implements ProductServiceUseCase {
             int updated = productRepository.increaseProductStock(existingProduct.getId(), amount);
             
             if (updated == 0) {
-                APIError.INTERNAL_SERVER_ERROR.setTitle("Error al actualizar");
-                APIError.INTERNAL_SERVER_ERROR.setMessage(
-                    "Error al actualizar el stock del producto.");
+                APIError.INTERNAL_SERVER_ERROR.setTitle("Error updating");
+                APIError.INTERNAL_SERVER_ERROR.setMessage("Error updating product stock.");
                 throw new APIRequestException(APIError.INTERNAL_SERVER_ERROR);
             }
             
@@ -226,8 +223,9 @@ public class ProductService implements ProductServiceUseCase {
             int updated = productRepository.decreaseProductStock(existingProduct.getId(), amount);
             
             if (updated == 0) {
-                APIError.INTERNAL_SERVER_ERROR.setTitle("Error al actualizar");
-                APIError.INTERNAL_SERVER_ERROR.setMessage("Ocurrió un error al actualizar el stock.");
+                APIError.INTERNAL_SERVER_ERROR.setTitle("Error updating");
+                APIError.INTERNAL_SERVER_ERROR.setMessage(
+                    "A decrease occurred when updating the stock.");
                 throw new APIRequestException(APIError.INTERNAL_SERVER_ERROR);
             }
         } catch (APIRequestException ex) {

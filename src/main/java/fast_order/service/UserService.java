@@ -56,15 +56,15 @@ public class UserService implements UserServiceUseCase {
     @Override
     public UserTO findUserById(UUID id) {
         try {
-            Optional<UserEntity> user = userRepository.findById(id);
+            Optional<UserEntity> response = userRepository.findById(id);
             
-            if (user.isEmpty()) {
-                APIError.RECORD_NOT_FOUND.setTitle("Usuario no encontrado");
-                APIError.RECORD_NOT_FOUND.setMessage("El usuario al que intentas acceder no existe.");
+            if (response.isEmpty()) {
+                APIError.RECORD_NOT_FOUND.setTitle("User not found");
+                APIError.RECORD_NOT_FOUND.setMessage("The user you are trying to access does not exist.");
                 throw new APIRequestException(APIError.RECORD_NOT_FOUND);
             }
             
-            return userMapper.toDTO(user.get());
+            return userMapper.toDTO(response.get());
         } catch (APIRequestException ex) {
             throw ex;
         } catch (DataAccessException ex) {
@@ -77,16 +77,16 @@ public class UserService implements UserServiceUseCase {
     @Override
     public UserTO findUserByEmail(String email) {
         try {
-            Optional<UserEntity> user = userRepository.findUserByEmail(email);
+            Optional<UserEntity> response = userRepository.findUserByEmail(email);
             
-            if (user.isEmpty()) {
-                APIError.RECORD_NOT_FOUND.setTitle("Usuario no encontrado");
+            if (response.isEmpty()) {
+                APIError.RECORD_NOT_FOUND.setTitle("User not found");
                 APIError.RECORD_NOT_FOUND.setMessage(
-                    "El usuario no encontrado. Por favor verifique su email.");
+                    "User not found. Please check your email.");
                 throw new APIRequestException(APIError.RECORD_NOT_FOUND);
             }
             
-            return userMapper.toDTO(user.get());
+            return userMapper.toDTO(response.get());
         } catch (APIRequestException ex) {
             throw ex;
         } catch (DataAccessException ex) {
@@ -100,15 +100,15 @@ public class UserService implements UserServiceUseCase {
     public UserTO createUser(UserTO user) {
         try {
             if (user.getRoleId() == null) {
-                APIError.BAD_REQUEST.setTitle("El ID es requerido");
-                APIError.BAD_REQUEST.setMessage("El ID del rol es requerido");
+                APIError.BAD_REQUEST.setTitle("ID is required");
+                APIError.BAD_REQUEST.setMessage("The role ID is required. Please provide a valid ID.");
                 throw new APIRequestException(APIError.BAD_REQUEST);
             }
             
             Optional<UserEntity> response = userRepository.findUserByEmail(user.getEmail());
             if (response.isPresent()) {
-                APIError.BAD_REQUEST.setTitle("El email ya está registrado");
-                APIError.BAD_REQUEST.setMessage("El email ya existe. Por favor verifique su email.");
+                APIError.BAD_REQUEST.setTitle("Registered email");
+                APIError.BAD_REQUEST.setMessage("The email already exists. Please check your email.");
                 throw new APIRequestException(APIError.BAD_REQUEST);
             }
 

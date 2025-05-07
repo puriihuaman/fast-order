@@ -72,10 +72,9 @@ public class OrderTO {
         description = "Current status of the order.",
         examples = {"PENDING", "FINISHED", "CANCELLED"}, defaultValue = "PENDING"
     )
-    @Builder.Default
     @Enumerated(EnumType.STRING)
     @JsonProperty(value = "status")
-    private OrderStatus status = OrderStatus.PENDING;
+    private OrderStatus status;
     
     @Schema(
         description = "Date and time the order was created.", example = "2025-04-13T15:42:00"

@@ -33,10 +33,11 @@ public class RoleEntity {
     @Column(name = "role_id", unique = true)
     private UUID id;
     
+    @Builder.Default
     @NotNull(message = "{field.null}")
     @Enumerated(EnumType.STRING)
     @Column(name = "role_name", unique = true, nullable = false, length = 35)
-    private RoleType roleName;
+    private RoleType roleName = RoleType.ADMIN;
     
     @NotNull(message = "{field.null}")
     @NotEmpty(message = "{field.empty}")

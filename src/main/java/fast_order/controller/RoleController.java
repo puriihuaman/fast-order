@@ -35,9 +35,9 @@ import java.util.UUID;
  * *
  * Exposes endpoints for:
  * - Gets a list of all roles.
- * - Get a role by an ID.
+ * - Gets a role by an ID.
  * - Obtains a role through its name.
- * - Register new role in the system.
+ * - Register a new role in the system.
  * *
  * All responses follow the standard format defined in {@link APIResponseData}.
  * *
@@ -85,7 +85,7 @@ public class RoleController {
      * @return ResponseEntity with data from the role found.
      * *
      * @see RoleTO Role data structure.
-     * @see RoleService#findRoleById(Long)
+     * @see RoleService#findRoleById(UUID)
      */
     @Operation(
         summary = "Gets a role",
