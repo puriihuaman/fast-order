@@ -24,11 +24,15 @@ public class ProductSpecification {
             List<Predicate> predicates = new ArrayList<>();
             keywords.remove("page");
             keywords.remove("size");
+            keywords.remove("sort");
             
             if (!ALLOWED_KEY.containsAll(keywords.keySet())) {
                 APIError.BAD_REQUEST.setTitle("Invalid parameter");
-                APIError.BAD_REQUEST.setMessage("Invalid filter parameter. Allowed parameters: %s.".formatted(
-                    ALLOWED_KEY));
+                APIError.BAD_REQUEST.setMessage(
+                    "Invalid filter parameter: %s. Allowed parameters: %s.".formatted(
+                        keywords.keySet(),
+                        ALLOWED_KEY
+                    ));
                 throw new APIRequestException(APIError.BAD_REQUEST);
             }
             

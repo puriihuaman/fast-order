@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -74,41 +75,66 @@ public class ProductController {
      * Retrieves a paginated list of all products based on specified sorting and filtering criteria.
      *
      * @param keywords        a map of keywords used for filtering the products
-     * @param sort            an optional array specifying sorting criteria (e.g., ["property,asc", "property,desc"])
      * @param defaultPageable the default pageable configuration including page size, number, and sorting defaults
      * @return a ResponseEntity containing the paginated list of products wrapped in APIResponseDataPagination
      */
-    @Operation(summary = "Product list", description = "Get a list of all products.")
+    @Operation(
+        summary = "Product list", description = "Get a paginated list of all products.",
+        parameters = {
+            @Parameter(
+                name = "name", description = "Filter by product name (substring match)",
+                example = "Samsung",
+                in = ParameterIn.QUERY
+            ),
+            @Parameter(
+                name = "stock", description = "Filter by exact stock value",
+                example = "20",
+                in = ParameterIn.QUERY
+            ),
+            @Parameter(
+                name = "price", description = "Filter by exact price.",
+                example = "99.99",
+                in = ParameterIn.QUERY
+            ),
+            @Parameter(
+                name = "page", description = "Page number (0-based)", example = "0",
+                in = ParameterIn.QUERY),
+            @Parameter(
+                name = "size", description = "Items per page", example = "20",
+                in = ParameterIn.QUERY
+            ),
+            @Parameter(
+                name = "sort", description = "Sorting criteria (property,direction",
+                example = "name,desc", in = ParameterIn.QUERY
+            )
+        }
+    )
     @SwaggerApiResponses
     @ApiResponse(
-        responseCode = "200", description = "Products successfully obtained.", content = @Content(
-        mediaType = MediaType.APPLICATION_JSON_VALUE,
-        schema = @Schema(implementation = APIResponseData.class), examples = @ExampleObject(
-        value = SwaggerResponseExample.EXAMPLE_GET_ALL_RESOURCE
-    )
-    )
+        responseCode = "200", description = "Products successfully obtained.",
+        content = @Content(
+            mediaType = MediaType.APPLICATION_JSON_VALUE,
+            schema = @Schema(implementation = APIResponseDataPagination.class),
+            examples = @ExampleObject(
+                value = SwaggerResponseExample.EXAMPLE_GET_ALL_RESOURCE
+            )
+        )
     )
     @GetMapping()
     public ResponseEntity<APIResponseDataPagination<ProductTO>> findAllProducts(
-        @RequestParam Map<String, String> keywords,
-        @RequestParam(value = "sort", required = false) String[] sort,
-        @PageableDefault(size = 20) Pageable defaultPageable
+        @RequestParam(required = false) Map<String, String> keywords,
+        @DefaultValue @PageableDefault(size = 20, direction = Sort.Direction.ASC)
+        @Parameter(hidden = true) Pageable defaultPageable
     )
     {
-        Sort dynamicSort = Sort.unsorted();
-        
-        if (sort != null && sort.length > 0) {
-            dynamicSort = Sort.by(sort);
-        }
-        
         Pageable pageable = PageRequest.of(
             defaultPageable.getPageNumber(),
             defaultPageable.getPageSize(),
-            dynamicSort
+            defaultPageable.getSort()
         );
         
-        Page<ProductTO> page = productService.findAllProducts(pageable, keywords);
-        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, page);
+        Page<ProductTO> productTOPage = productService.findAllProducts(pageable, keywords);
+        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, productTOPage);
     }
     
     /**
@@ -278,7 +304,7 @@ public class ProductController {
      * Updates the price of an existing product.
      *
      * @param id    Unique identifier of the product to be removed.
-     * @param price DTO with new price.
+     * @param price DTO with a new price.
      * @return ResponseEntity with the updated product.
      * *
      * @see PriceUpdateTO PriceUpdate data structure.

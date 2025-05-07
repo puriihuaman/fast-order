@@ -5,7 +5,9 @@
 Para el correcto funcionamiento de la aplicación necesitamos tener algunas cosas en cuenta.  
 Debemos asegurarnos de que disponemos de todas las variables de entorno.   
 En el repositorio encontrarás un archivo `.env.demo`, este contiene una plantilla de las
-variables de entorno que debes tener.
+variables de entorno que debes tener.  
+El usuario por defecto se creará con los siguientes datos: `DEFAULT_USER_EMAIL` y 
+`DEFAULT_USER_PASSWORD`.
 
 Estas variables deberán estar reflejados en el archivo `.env` que debes crear.
 
@@ -15,9 +17,13 @@ Estas variables deberán estar reflejados en el archivo `.env` que debes crear.
     SPRING_DATASOURCE_USERNAME=your_user
     SPRING_DATASOURCE_PASSWORD=your_password
 
-    # Seguridad
-    SECURITY_USER_NAME=admin
-    SECURITY_USER_PASSWORD=admin
+    # Seguridad básica de autenticación
+    SECURITY_USER_NAME=custom_user
+    SECURITY_USER_PASSWORD=custom_secure_password
+
+    # Usuario por defecto (cambiar si sabemos lo que estamos haciendo)
+    DEFAULT_USER_EMAIL=bytes@colaborativos.es
+    DEFAULT_USER_PASSWORD=B&t3sC0l4b&2025
 
     # JWT
     SECRET_KEY=62d84588dd8e4b359...
@@ -29,7 +35,10 @@ Estas variables deberán estar reflejados en el archivo `.env` que debes crear.
 ```
 
 > [!NOTE]
-> Obviamente estos valores de las variables no son válidas y deberás de crear valores válidos.
+> Obviamente estos valores de las variables no son válidas y deberás de crear valores válidos.  
+> ¿Dónde generar un Secret Key?.  
+> Aquí puede generar una [Secret Key](https://www.vondy.com/random-key-generator--ZzGGMYgS?lc=5).
+> La Secret key debe ser de `256-bit Hex Key`.
 
 ## Configuración de base de datos
 
@@ -90,18 +99,18 @@ Para probar los endpoints deberemos de tener en cuenta que existen tres tipos de
 
 Al iniciar la aplicación por defecto se crea un usuario con rol de administrador.
 
-Tu usuario tendrá los siguientes datos:
+El usuario inicial tendrá los siguientes datos:
 
 ```
 email: bytes@colaborativos.es
-password: AdM¡N&20_25
+password: B&t3sC0l4b&2025
 ```
 
-Con este usuario deberás de realizar login a través de la interfaz de Swagger o Postman, en el 
-siguiente endpoint: `api/auth/login`.
+Con este usuario deberás de realizar login a través de la interfaz de Swagger o un cliente Http 
+como Postman, en el siguiente endpoint: `api/auth/login`.
 
 ```bash
-http://localhost:8080/api/auth/login
+  http://localhost:8080/api/auth/login
 ```
 
 Al momento de hacer login se devolverá la siguiente información, entre la información tendrás el
@@ -120,57 +129,57 @@ token de acceso, que deberías de usar para hacer las peticiones a los diferente
 - Usuarios
   - Listar usuarios:
     ```bash
-    http://localhost:8080/api/users/all
+      http://localhost:8080/api/users/all
     ```
   - Buscar usuario por ID:
     ```bash
-    http://localhost:8080/api/users/id
+      http://localhost:8080/api/users/id
     ```
   - Crear usuario
     ```bash
-    http://localhost:8080/api/users/create
+      http://localhost:8080/api/users/create
     ```
   - Eliminar
     ```bash
-    http://localhost:8080/api/users/delete/id
+      http://localhost:8080/api/users/delete/id
     ```
   - _Entre otros._
 - Productos
   - Listar productos:
     ```bash
-    http://localhost:8080/api/products/all
+      http://localhost:8080/api/products
     ```
   - Buscar producto por nombre:
     ```bash
-    http://localhost:8080/api/users/name
+      http://localhost:8080/api/users/name
     ```
   - Crear producto:
     ```bash
-    http://localhost:8080/api/users/create
+      http://localhost:8080/api/users/create
     ```
   - Actualizar producto:
     ```bash
-    http://localhost:8080/api/users/update/id
+      http://localhost:8080/api/users/update/id
     ```
 - Pedidos
   - Listar pedidos:
     ```bash
-    http://localhost:8080/api/orders/all
+      http://localhost:8080/api/orders/all
     ```
   - Crear un pedido:
     ```bash
-    http://localhost:8080/api/orders/create
+      http://localhost:8080/api/orders/create
     ```
   - Actualizar un pedido:
     ```bash
-    http://localhost:8080/api/orders/update/id
+      http://localhost:8080/api/orders/update/id
     ```
   - Cancelar un pedido:
     ```bash
-    http://localhost:8080/api/orders/cancel/id
+      http://localhost:8080/api/orders/cancel/id
     ```
 - Roles
   - Listar roles:
     ```bash
-    http://localhost:8080/api/roles/all
+      http://localhost:8080/api/roles/all
     ```

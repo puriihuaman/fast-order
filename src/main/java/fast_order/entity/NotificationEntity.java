@@ -35,7 +35,8 @@ public class NotificationEntity {
     @Column(name = "order_id", updatable = false)
     private UUID orderId;
     
+    @Builder.Default
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

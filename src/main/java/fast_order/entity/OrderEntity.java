@@ -60,7 +60,8 @@ public class OrderEntity {
     @Column(name = "status", nullable = false, length = 15)
     private OrderStatus status = OrderStatus.PENDING;
     
+    @Builder.Default
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 }
