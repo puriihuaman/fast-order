@@ -3,13 +3,10 @@ package fast_order.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 /**
  * Data Transfer Object (DTO) that represents a user registered in the system.
@@ -42,7 +40,7 @@ public class UserTO {
         hidden = true
     )
     @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
-    private Long id;
+    private UUID id;
     
     @Schema(
         description = "User's full name. Letters and spaces are allowed. Minimum 2 characters.",
@@ -80,23 +78,20 @@ public class UserTO {
     private String password;
     
     @Schema(description = "User registration date. Must be today", example = "2025-04-12")
-    @NotNull(message = "{field.null}")
-    @FutureOrPresent(message = "{user.signUpDate}")
-    @JsonProperty(value = "signUpDate")
+    @Builder.Default
+    @JsonProperty(value = "signUpDate", defaultValue = "TODAY")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate signUpDate;
+    private LocalDate signUpDate = LocalDate.now();
     
     @Schema(description = "Total amount of user spending. Cannot be negative.", example = "150.50")
-    @NotNull(message = "{field.null}")
-    @DecimalMin(value = "0.0", message = "{user.min.totalSpent}")
-    @PositiveOrZero(message = "{user.totalSpent.positive}")
+    @Builder.Default
     @JsonProperty(value = "totalSpent")
-    private Double totalSpent;
+    private Double totalSpent = 0.0;
     
     @Schema(
         description = "ID of the assigned to the user. Relates to the Role entity", example = "2"
     )
     @NotNull(message = "{user.roleId}")
     @JsonProperty(value = "roleId")
-    private Long roleId;
+    private UUID roleId;
 }

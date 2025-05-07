@@ -1,9 +1,9 @@
 package fast_order.service;
 
+import fast_order.commons.enums.APIError;
 import fast_order.dto.RoleTO;
 import fast_order.dto.UserTO;
 import fast_order.entity.UserEntity;
-import fast_order.commons.enums.APIError;
 import fast_order.exception.APIRequestException;
 import fast_order.mapper.RoleMapper;
 import fast_order.mapper.UserMapper;
@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService implements UserServiceUseCase {
@@ -53,17 +54,17 @@ public class UserService implements UserServiceUseCase {
     }
     
     @Override
-    public UserTO findUserById(Long id) {
+    public UserTO findUserById(UUID id) {
         try {
-            Optional<UserEntity> user = userRepository.findById(id);
+            Optional<UserEntity> response = userRepository.findById(id);
             
-            if (user.isEmpty()) {
-                APIError.RECORD_NOT_FOUND.setTitle("Usuario no encontrado");
-                APIError.RECORD_NOT_FOUND.setMessage("El usuario al que intentas acceder no existe.");
+            if (response.isEmpty()) {
+                APIError.RECORD_NOT_FOUND.setTitle("User not found");
+                APIError.RECORD_NOT_FOUND.setMessage("The user you are trying to access does not exist.");
                 throw new APIRequestException(APIError.RECORD_NOT_FOUND);
             }
             
-            return userMapper.toDTO(user.get());
+            return userMapper.toDTO(response.get());
         } catch (APIRequestException ex) {
             throw ex;
         } catch (DataAccessException ex) {
@@ -76,16 +77,16 @@ public class UserService implements UserServiceUseCase {
     @Override
     public UserTO findUserByEmail(String email) {
         try {
-            Optional<UserEntity> user = userRepository.findUserByEmail(email);
+            Optional<UserEntity> response = userRepository.findUserByEmail(email);
             
-            if (user.isEmpty()) {
-                APIError.RECORD_NOT_FOUND.setTitle("Usuario no encontrado");
+            if (response.isEmpty()) {
+                APIError.RECORD_NOT_FOUND.setTitle("User not found");
                 APIError.RECORD_NOT_FOUND.setMessage(
-                    "El usuario no encontrado. Por favor verifique su email.");
-                throw new RuntimeException("User not found");
+                    "User not found. Please check your email.");
+                throw new APIRequestException(APIError.RECORD_NOT_FOUND);
             }
             
-            return userMapper.toDTO(user.get());
+            return userMapper.toDTO(response.get());
         } catch (APIRequestException ex) {
             throw ex;
         } catch (DataAccessException ex) {
@@ -99,15 +100,23 @@ public class UserService implements UserServiceUseCase {
     public UserTO createUser(UserTO user) {
         try {
             if (user.getRoleId() == null) {
-                APIError.BAD_REQUEST.setTitle("El ID es requerido");
-                APIError.BAD_REQUEST.setMessage("El ID del rol es requerido");
+                APIError.BAD_REQUEST.setTitle("ID is required");
+                APIError.BAD_REQUEST.setMessage("The role ID is required. Please provide a valid ID.");
                 throw new APIRequestException(APIError.BAD_REQUEST);
             }
+            
+            Optional<UserEntity> response = userRepository.findUserByEmail(user.getEmail());
+            if (response.isPresent()) {
+                APIError.BAD_REQUEST.setTitle("Registered email");
+                APIError.BAD_REQUEST.setMessage("The email already exists. Please check your email.");
+                throw new APIRequestException(APIError.BAD_REQUEST);
+            }
+
             UserEntity userEntity = userMapper.toEntity(user);
             
-            RoleTO roleEntity = roleService.findRoleById(user.getRoleId());
+            RoleTO role = roleService.findRoleById(user.getRoleId());
             
-            userEntity.setRole(roleMapper.toEntity(roleEntity));
+            userEntity.setRole(roleMapper.toEntity(role));
             userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
             
             UserEntity createdUser = userRepository.save(userEntity);
@@ -130,7 +139,7 @@ public class UserService implements UserServiceUseCase {
     }
     
     @Override
-    public UserTO updateUser(Long id, UserTO user) {
+    public UserTO updateUser(UUID id, UserTO user) {
         try {
             UserTO existingUser = this.findUserById(id);
             
@@ -161,7 +170,7 @@ public class UserService implements UserServiceUseCase {
     }
     
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(UUID id) {
         try {
             UserTO existingUser = this.findUserById(id);
             userRepository.deleteById(existingUser.getId());

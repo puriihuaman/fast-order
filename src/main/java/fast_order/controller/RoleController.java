@@ -28,15 +28,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * REST controller for role management.
  * *
  * Exposes endpoints for:
  * - Gets a list of all roles.
- * - Get a role by an ID.
+ * - Gets a role by an ID.
  * - Obtains a role through its name.
- * - Register new role in the system.
+ * - Register a new role in the system.
  * *
  * All responses follow the standard format defined in {@link APIResponseData}.
  * *
@@ -73,7 +74,7 @@ public class RoleController {
         )
     )
     @GetMapping("all")
-    public ResponseEntity<APIResponseData> findAllRoles() {
+    public ResponseEntity<APIResponseData<List<RoleTO>>> findAllRoles() {
         List<RoleTO> roles = roleService.findRoles();
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, roles);
     }
@@ -84,7 +85,7 @@ public class RoleController {
      * @return ResponseEntity with data from the role found.
      * *
      * @see RoleTO Role data structure.
-     * @see RoleService#findRoleById(Long)
+     * @see RoleService#findRoleById(UUID)
      */
     @Operation(
         summary = "Gets a role",
@@ -110,7 +111,7 @@ public class RoleController {
         )
     )
     @GetMapping("id/{id}")
-    public ResponseEntity<APIResponseData> findRoleById(@PathVariable("id") Long id) {
+    public ResponseEntity<APIResponseData<RoleTO>> findRoleById(@PathVariable("id") UUID id) {
         RoleTO role = roleService.findRoleById(id);
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, role);
     }
@@ -147,7 +148,7 @@ public class RoleController {
         )
     )
     @GetMapping("role/{name}")
-    public ResponseEntity<APIResponseData> findRoleByRoleName(@PathVariable("name") RoleType name) {
+    public ResponseEntity<APIResponseData<RoleTO>> findRoleByRoleName(@PathVariable("name") RoleType name) {
         RoleTO role = roleService.findRoleByRoleName(name);
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, role);
     }
@@ -174,7 +175,7 @@ public class RoleController {
         )
     )
     @PostMapping("create")
-    public ResponseEntity<APIResponseData> createRole(@Valid @RequestBody RoleTO role) {
+    public ResponseEntity<APIResponseData<RoleTO>> createRole(@Valid @RequestBody RoleTO role) {
         RoleTO savedRole = roleService.createRole(role);
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_CREATED, savedRole);
     }

@@ -18,6 +18,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Entity(name = "ROLE")
 @Table(name = "ROLES", schema = "fast_order_schema")
 @Builder
@@ -27,14 +29,15 @@ import lombok.Setter;
 @Setter
 public class RoleEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "role_id", unique = true)
-    private Long id;
+    private UUID id;
     
+    @Builder.Default
     @NotNull(message = "{field.null}")
     @Enumerated(EnumType.STRING)
     @Column(name = "role_name", unique = true, nullable = false, length = 35)
-    private RoleType roleName;
+    private RoleType roleName = RoleType.ADMIN;
     
     @NotNull(message = "{field.null}")
     @NotEmpty(message = "{field.empty}")

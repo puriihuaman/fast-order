@@ -17,6 +17,7 @@ import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
@@ -68,10 +69,12 @@ public class JwtUtil {
     
     public String generateToken(UserTO userTO) {
         final String ROLE_PREFIX = "ROLE_";
+        String roleName = this.getRoleById(userTO.getRoleId());
+        
         Map<String, Object> claims = new HashMap<>();
         claims.put("name", userTO.getName());
         claims.put("email", userTO.getEmail());
-        claims.put("role", ROLE_PREFIX + this.getRoleById(userTO.getId()));
+        claims.put("role", ROLE_PREFIX + roleName);
         return this.buildToken(claims, userTO.getEmail());
     }
     
@@ -98,7 +101,7 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
     
-    public String getRoleById(Long id) {
+    public String getRoleById(UUID id) {
         RoleTO role = roleService.findRoleById(id);
         return role.getRoleName().name();
     }

@@ -73,7 +73,7 @@ Entidad `role`.
 
 | Campo       | Tipo            | Descripción         |
 |-------------|-----------------|---------------------|
-| id          | Long            | Identificador único |
+| id          | UUID            | Identificador único |
 | role_name   | Enum (RoleType) | Nombre del rol      |
 | description | String          | Descripción del rol |
 
@@ -81,7 +81,7 @@ Entidad `user`.
 
 | Campo        | Tipo              | Descripción           |
 |--------------|-------------------|-----------------------|
-| id           | Long              | Identificador único   |
+| id           | UUID              | Identificador único   |
 | name         | String            | Nombre completo       |
 | email        | String            | Correo electrónico    |
 | password     | String            | Contraseña de usuario |
@@ -93,7 +93,7 @@ Entidad `product`.
 
 | Campo       | Tipo   | Descripción           |
 |-------------|--------|-----------------------|
-| id          | Long   | Identificador único   |
+| id          | UUID   | Identificador único   |
 | name        | String | Nombre del producto   |
 | stock       | String | Número de existencias |
 | price       | Double | Precio del producto   |
@@ -103,12 +103,21 @@ Entidad `order`.
 
 | Campo      | Tipo                   | Descripción                |
 |------------|------------------------|----------------------------|
-| id         | Long                   | Identificador único        |
+| id         | UUID                   | Identificador único        |
 | amount     | Integer                | Cantidad de productos      |
 | user       | User(UserEntity)       | Identificador del usuario  |
 | product    | Product(ProductEntity) | Identificador del producto |
 | status     | Enum(OrderStatus)      | Estado del pedido          |
 | created_at | Date                   | Fecha de creación          |
+
+Entidad `notification`.
+
+| Campo      | Tipo               | Descripción               |
+|------------|--------------------|---------------------------|
+| id         | UUID               | Identificador único       |
+| message    | String             | Mensaje de notificación   |
+| order      | Order(OrderEntity) | Identificador de la orden |
+| created_at | Date               | Fecha de creación         |
 
 ---
 

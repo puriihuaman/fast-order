@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,9 +13,11 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
+public interface ProductRepository extends JpaRepository<ProductEntity, UUID>,
+    JpaSpecificationExecutor<ProductEntity> {
     Optional<ProductEntity> findProductByName(
         @NotNull(message = "{field.null}") @NotEmpty(message = "{field.empty}")
         @Size(min = 4, max = 60, message = "{product.name.size}") String name
@@ -23,15 +26,15 @@ public interface ProductRepository extends JpaRepository<ProductEntity, Long> {
     @Modifying
     @Transactional
     @Query("UPDATE PRODUCT prod SET prod.price = :price WHERE prod.id = :id")
-    int updateProductPrice(@Param("id") Long id, @Param("price") Double price);
+    int updateProductPrice(@Param("id") UUID id, @Param("price") Double price);
     
     @Modifying
     @Transactional
     @Query("UPDATE PRODUCT prod SET prod.stock = prod.stock + :amount WHERE prod.id = :id")
-    int increaseProductStock(@Param("id") Long id, @Param("amount") Integer amount);
+    int increaseProductStock(@Param("id") UUID id, @Param("amount") Integer amount);
     
     @Modifying
     @Transactional
     @Query("UPDATE PRODUCT prod SET prod.stock = prod.stock - :amount WHERE prod.id = :id")
-    int decreaseProductStock(@Param("id") Long id, @Param("amount") Integer amount);
+    int decreaseProductStock(@Param("id") UUID id, @Param("amount") Integer amount);
 }

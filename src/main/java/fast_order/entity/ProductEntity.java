@@ -19,6 +19,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Entity(name = "PRODUCT")
 @Table(name = "PRODUCTS", schema = "fast_order_schema")
 @Builder
@@ -28,9 +30,9 @@ import lombok.Setter;
 @Setter
 public class ProductEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "product_id", unique = true)
-    private Long id;
+    private UUID id;
     
     @NotNull(message = "{field.null}")
     @NotEmpty(message = "{field.empty}")
@@ -38,6 +40,7 @@ public class ProductEntity {
     @Column(name = "name", unique = true, nullable = false, length = 60)
     private String name;
     
+    @Builder.Default
     @NotNull(message = "{field.null}")
     @PositiveOrZero(message = "{product.stock.positive}")
     @Min(value = 0, message = "{product.stock.min}")

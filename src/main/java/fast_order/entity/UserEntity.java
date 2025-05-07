@@ -25,6 +25,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity(name = "USER")
 @Table(name = "USERS", schema = "fast_order_schema")
@@ -35,9 +36,9 @@ import java.time.LocalDate;
 @Setter
 public class UserEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "user_id", unique = true)
-    private Long id;
+    private UUID id;
     
     @NotNull(message = "{field.null}")
     @NotEmpty(message = "{field.empty}")
@@ -59,16 +60,18 @@ public class UserEntity {
     @Column(name = "password", nullable = false, length = 100)
     private String password;
     
+    @Builder.Default
     @NotNull(message = "{field.null}")
     @FutureOrPresent(message = "{user.signUpDate}")
     @Column(name = "sign_up_date", nullable = false)
-    private LocalDate signUpDate;
+    private LocalDate signUpDate = LocalDate.now();
     
+    @Builder.Default
     @NotNull(message = "{field.null}")
     @DecimalMin(value = "0.0", message = "{user.min.totalSpent}")
     @PositiveOrZero(message = "{user.totalSpent.positive}")
     @Column(name = "total_spent", nullable = false)
-    private Double totalSpent;
+    private Double totalSpent = 0.0;
     
     @Valid
     @OneToOne(fetch = FetchType.EAGER, optional = false)

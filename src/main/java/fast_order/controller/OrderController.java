@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * REST controller for order management.
@@ -75,7 +76,7 @@ public class OrderController {
         )
     )
     @GetMapping("all")
-    public ResponseEntity<APIResponseData> findAllOrders() {
+    public ResponseEntity<APIResponseData<List<OrderTO>>> findAllOrders() {
         List<OrderTO> orders = orderService.findAllOrders();
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, orders);
     }
@@ -86,7 +87,7 @@ public class OrderController {
      * @return ResponseEntity with data from the order found.
      * *
      * @see OrderTO Order data structure.
-     * @see OrderService#findOrderById(Long) 
+     * @see OrderService#findOrderById(UUID)
      */
     @Operation(
         summary = "Get an order",
@@ -112,7 +113,7 @@ public class OrderController {
         )
     )
     @GetMapping("id/{id}")
-    public ResponseEntity<APIResponseData> findOrderById(@PathVariable("id") Long id) {
+    public ResponseEntity<APIResponseData<OrderTO>> findOrderById(@PathVariable("id") UUID id) {
         OrderTO order = orderService.findOrderById(id);
         return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, order);
     }
@@ -141,7 +142,7 @@ public class OrderController {
         )
     )
     @PostMapping("create")
-    public ResponseEntity<APIResponseData> createOrder(@Valid @RequestBody OrderTO order) {
+    public ResponseEntity<APIResponseData<OrderTO>> createOrder(@Valid @RequestBody OrderTO order) {
         OrderTO createdOrder = orderService.createOrder(order);
         
         APISuccess.RESOURCE_RETRIEVED.setMessage("Order created successfully.");
@@ -156,7 +157,7 @@ public class OrderController {
      * @return ResponseEntity with the updated order.
      * *
      * @see OrderTO Order data structure.
-     * @see OrderService#updateOrder(Long, OrderTO)
+     * @see OrderService#updateOrder(UUID, OrderTO)
      */
     @Operation(
         summary = "Update an order",
@@ -182,8 +183,8 @@ public class OrderController {
         )
     )
     @PutMapping("update/{id}")
-    public ResponseEntity<APIResponseData> updateOrder(
-        @PathVariable("id") Long id,
+    public ResponseEntity<APIResponseData<OrderTO>> updateOrder(
+        @PathVariable("id") UUID id,
         @Valid @RequestBody OrderTO order
     )
     {
@@ -196,10 +197,10 @@ public class OrderController {
     
     /**
      * Cancels an existing order (status changes to CANCELLED).
-     * @param id Unique identifier of the order to be cancelled.
-     * @return ResponseEntity with confirmation message.
+     * @param id Unique identifier of the order to be canceled.
+     * @return ResponseEntity with a confirmation message.
      * *
-     * @see OrderService#cancelOrder(Long)
+     * @see OrderService#cancelOrder(UUID)
      */
     @Operation(
         summary = "Cancel order",
@@ -225,11 +226,11 @@ public class OrderController {
         )
     )
     @PatchMapping("cancel/{id}")
-    public ResponseEntity<APIResponseData> cancelOrder(@PathVariable("id") Long id) {
+    public ResponseEntity<APIResponseData<Void>> cancelOrder(@PathVariable("id") UUID id) {
         String responseText = orderService.cancelOrder(id);
         
         APISuccess.RESOURCE_RETRIEVED.setMessage(responseText);
         
-        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, null);
+        return APIResponseHandler.handleResponse(APISuccess.RESOURCE_RETRIEVED, (Void)null);
     }
 }

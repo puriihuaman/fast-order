@@ -1,13 +1,9 @@
 package fast_order.commons.security;
 
 import fast_order.commons.enums.APIError;
-import fast_order.dto.RoleTO;
-import fast_order.dto.UserTO;
 import fast_order.entity.UserEntity;
 import fast_order.exception.APIRequestException;
-import fast_order.mapper.UserMapper;
 import fast_order.repository.UserRepository;
-import fast_order.service.RoleService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,14 +21,9 @@ import java.util.Optional;
 @Configuration
 public class AppConfig {
     private final UserRepository userRepository;
-    private final RoleService roleService;
-    private final UserMapper userMapper;
     
-    public AppConfig(UserRepository userRepository, RoleService roleService, UserMapper userMapper)
-    {
+    public AppConfig(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.roleService = roleService;
-        this.userMapper = userMapper;
     }
     
     @Bean
@@ -40,26 +31,23 @@ public class AppConfig {
         final String ROLE_PREFIX = "ROLE_";
         
         return (username) -> {
-            Optional<UserEntity>
-                existingUser =
-                userRepository.findUserByEmail(username.toLowerCase());
+            Optional<UserEntity> response = userRepository.findUserByEmail(username.toLowerCase());
             
-            if (existingUser.isEmpty()) {
+            if (response.isEmpty()) {
                 APIError.RECORD_NOT_FOUND.setTitle("Usuario no encontrado");
                 APIError.RECORD_NOT_FOUND.setMessage("El usuario que estas buscando no existe.");
                 
                 throw new APIRequestException(APIError.RECORD_NOT_FOUND);
             }
             
-            UserTO user = userMapper.toDTO(existingUser.get());
-            RoleTO roleDTO = roleService.findRoleById(user.getRoleId());
-            String roleName = ROLE_PREFIX + roleDTO.getRoleName();
+            UserEntity existingUser = response.get();
+            String roleName = ROLE_PREFIX + existingUser.getRole().getRoleName();
             
             SimpleGrantedAuthority role = new SimpleGrantedAuthority(roleName);
             
             return User.builder()
-                       .username(user.getEmail())
-                       .password(user.getPassword())
+                       .username(existingUser.getEmail())
+                       .password(existingUser.getPassword())
                        .authorities(role)
                        .build();
         };

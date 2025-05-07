@@ -14,6 +14,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 /**
  * Data Transfer Object (DTO) that plays a role in the authentication and authorization system.
  * -
@@ -42,13 +44,14 @@ public class RoleTO {
         hidden = true
     )
     @JsonProperty(value = "id", access = JsonProperty.Access.READ_ONLY)
-    private Long id;
+    private UUID id;
     
     @Schema(
         description = "Role name.", examples = {"ADMIN", "USER", "INVITED"},
         requiredMode = Schema.RequiredMode.REQUIRED
     )
     @NotNull(message = "{field.null}")
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @JsonProperty(value = "roleName")
     private RoleType roleName = RoleType.ADMIN;

@@ -24,6 +24,7 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "ORDERS", schema = "fast_order_schema")
@@ -34,9 +35,9 @@ import java.time.LocalDateTime;
 @Setter
 public class OrderEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "order_id", unique = true)
-    private Long id;
+    private UUID id;
     
     @NotNull(message = "{field.null}")
     @Min(value = 0, message = "{order.amount.min}")
@@ -54,11 +55,13 @@ public class OrderEntity {
     @JoinColumn(name = "product_id", referencedColumnName = "product_id", nullable = false)
     private ProductEntity product;
     
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 15)
     private OrderStatus status = OrderStatus.PENDING;
     
+    @Builder.Default
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 }

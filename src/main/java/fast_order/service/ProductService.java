@@ -1,21 +1,26 @@
 package fast_order.service;
 
+import fast_order.commons.enums.APIError;
 import fast_order.dto.PriceUpdateTO;
 import fast_order.dto.ProductTO;
 import fast_order.entity.ProductEntity;
-import fast_order.commons.enums.APIError;
 import fast_order.exception.APIRequestException;
 import fast_order.mapper.ProductMapper;
 import fast_order.repository.ProductRepository;
 import fast_order.service.use_case.ProductServiceUseCase;
+import fast_order.utils.ProductSpecification;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ProductService implements ProductServiceUseCase {
@@ -28,9 +33,14 @@ public class ProductService implements ProductServiceUseCase {
     }
     
     @Override
-    public List<ProductTO> findAllProducts() {
+    public Page<ProductTO> findAllProducts(Pageable pageable, Map<String, String> keywords) {
         try {
-            return productMapper.toDTOList(productRepository.findAll());
+            Specification<ProductEntity> spec = ProductSpecification.filterProducts(keywords);
+            Page<ProductEntity> result = productRepository.findAll(spec, pageable);
+            
+            return result.map(productMapper::toDTO);
+        } catch (APIRequestException ex) {
+            throw ex;
         } catch (DataAccessException ex) {
             throw new APIRequestException(APIError.DATABASE_ERROR);
         } catch (Exception ex) {
@@ -39,14 +49,14 @@ public class ProductService implements ProductServiceUseCase {
     }
     
     @Override
-    public ProductTO findProductById(Long id) {
+    public ProductTO findProductById(UUID id) {
         try {
             Optional<ProductEntity> existingProduct = productRepository.findById(id);
             
             if (existingProduct.isEmpty()) {
-                APIError.RECORD_NOT_FOUND.setTitle("Producto no encontrado");
+                APIError.RECORD_NOT_FOUND.setTitle("Product not found");
                 APIError.RECORD_NOT_FOUND.setMessage(
-                    "El producto al que intentas acceder no existe.");
+                    "The product you are trying to access does not exist.");
                 
                 throw new APIRequestException(APIError.RECORD_NOT_FOUND);
             }
@@ -67,9 +77,8 @@ public class ProductService implements ProductServiceUseCase {
             Optional<ProductEntity> existingProduct = productRepository.findProductByName(name);
             
             if (existingProduct.isEmpty()) {
-                APIError.RECORD_NOT_FOUND.setTitle("Producto no encontrado");
-                APIError.RECORD_NOT_FOUND.setMessage(
-                    "Producto no encontrado. Por favor verifique el nombre.");
+                APIError.RECORD_NOT_FOUND.setTitle("Product not found");
+                APIError.RECORD_NOT_FOUND.setMessage("Product not found. Please check the name.");
                 throw new APIRequestException(APIError.RECORD_NOT_FOUND);
             }
             
@@ -106,7 +115,7 @@ public class ProductService implements ProductServiceUseCase {
     }
     
     @Override
-    public ProductTO updateProduct(Long id, ProductTO product) {
+    public ProductTO updateProduct(UUID id, ProductTO product) {
         try {
             ProductTO existingProduct = this.findProductById(id);
             
@@ -136,7 +145,7 @@ public class ProductService implements ProductServiceUseCase {
     }
     
     @Override
-    public void deleteProduct(Long id) {
+    public void deleteProduct(UUID id) {
         try {
             ProductTO existingProduct = this.findProductById(id);
             
@@ -158,7 +167,7 @@ public class ProductService implements ProductServiceUseCase {
     }
     
     @Override
-    public ProductTO updateProductPrice(Long id, PriceUpdateTO newPrice) {
+    public ProductTO updateProductPrice(UUID id, PriceUpdateTO newPrice) {
         try {
             ProductTO existingProduct = this.findProductById(id);
             
@@ -168,9 +177,8 @@ public class ProductService implements ProductServiceUseCase {
             );
             
             if (productUpdated == 0) {
-                APIError.INTERNAL_SERVER_ERROR.setTitle("Error al actualizar");
-                APIError.INTERNAL_SERVER_ERROR.setMessage(
-                    "Error al actualizar el precio del producto.");
+                APIError.INTERNAL_SERVER_ERROR.setTitle("Error updating");
+                APIError.INTERNAL_SERVER_ERROR.setMessage("Error updating product price.");
                 throw new APIRequestException(APIError.INTERNAL_SERVER_ERROR);
             }
             
@@ -185,16 +193,15 @@ public class ProductService implements ProductServiceUseCase {
     }
     
     @Override
-    public ProductTO updateProductStock(Long id, Integer amount) {
+    public ProductTO updateProductStock(UUID id, Integer amount) {
         try {
             ProductTO existingProduct = this.findProductById(id);
             
             int updated = productRepository.increaseProductStock(existingProduct.getId(), amount);
             
             if (updated == 0) {
-                APIError.INTERNAL_SERVER_ERROR.setTitle("Error al actualizar");
-                APIError.INTERNAL_SERVER_ERROR.setMessage(
-                    "Error al actualizar el stock del producto.");
+                APIError.INTERNAL_SERVER_ERROR.setTitle("Error updating");
+                APIError.INTERNAL_SERVER_ERROR.setMessage("Error updating product stock.");
                 throw new APIRequestException(APIError.INTERNAL_SERVER_ERROR);
             }
             
@@ -209,15 +216,16 @@ public class ProductService implements ProductServiceUseCase {
     }
     
     @Override
-    public void decreaseProductStock(Long id, Integer amount) {
+    public void decreaseProductStock(UUID id, Integer amount) {
         try {
             ProductTO existingProduct = this.findProductById(id);
             
             int updated = productRepository.decreaseProductStock(existingProduct.getId(), amount);
             
             if (updated == 0) {
-                APIError.INTERNAL_SERVER_ERROR.setTitle("Error al actualizar");
-                APIError.INTERNAL_SERVER_ERROR.setMessage("Ocurrió un error al actualizar el stock.");
+                APIError.INTERNAL_SERVER_ERROR.setTitle("Error updating");
+                APIError.INTERNAL_SERVER_ERROR.setMessage(
+                    "A decrease occurred when updating the stock.");
                 throw new APIRequestException(APIError.INTERNAL_SERVER_ERROR);
             }
         } catch (APIRequestException ex) {
@@ -228,7 +236,6 @@ public class ProductService implements ProductServiceUseCase {
             throw new APIRequestException(APIError.INTERNAL_SERVER_ERROR);
         }
     }
-    
     
     public Boolean checkStock(ProductTO product, Integer amount) {
         return product.getStock() >= amount;
