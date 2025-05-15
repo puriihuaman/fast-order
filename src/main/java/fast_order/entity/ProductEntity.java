@@ -34,7 +34,6 @@ public class ProductEntity {
     @Column(name = "product_id", unique = true)
     private UUID id;
     
-    @NotNull(message = "{field.null}")
     @NotEmpty(message = "{field.empty}")
     @Size(min = 4, max = 60, message = "{product.name.size}")
     @Column(name = "name", unique = true, nullable = false, length = 60)
@@ -53,7 +52,7 @@ public class ProductEntity {
     @Column(name = "price", nullable = false)
     private Double price;
     
-    @NotNull(message = "{field.null}")
+    @NotEmpty(message = "{field.empty}")
     @Size(min = 10, max = 200, message = "{product.description.size}")
     @Column(name = "description", nullable = false, length = 200)
     private String description;

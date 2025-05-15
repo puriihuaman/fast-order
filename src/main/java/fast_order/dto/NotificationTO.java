@@ -2,12 +2,12 @@ package fast_order.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -40,6 +40,7 @@ public class NotificationTO {
         description = "The content of the notification message.",
         example = "Your order #123 has been updated to 'SHIPPED'."
     )
+    @NotNull(message = "{field.null}")
     @JsonProperty(value = "message")
     private String message;
     
@@ -47,6 +48,7 @@ public class NotificationTO {
         description = "ID of the order associated with this notification. Related to the 'Order' entity.",
         example = "f9e8d7c6-b5a4-3210-fedc-ba9876543210"
     )
+    @NotNull(message = "{field.null}")
     @JsonProperty(value = "orderId")
     private UUID orderId;
     
@@ -54,7 +56,6 @@ public class NotificationTO {
         description = "Date and time the notification was created.",
         example = "2025-05-06T12:00:00", accessMode = Schema.AccessMode.READ_ONLY
     )
-    @CreationTimestamp
     @JsonProperty(value = "createdAt", access = JsonProperty.Access.READ_ONLY)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
 }

@@ -2,6 +2,7 @@ package fast_order.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,6 +34,7 @@ public class KafkaNotificationTO {
         description = "The content of the notification message to be sent via Kafka.",
         example = "Order #456 has been successfully processed."
     )
+    @NotNull(message = "{field.null}")
     @JsonProperty(value = "message")
     private String message;
     
@@ -40,6 +42,7 @@ public class KafkaNotificationTO {
         description = "ID of the order associated with this Kafka notification.",
         example = "98765432-10fe-dcba-9876-543210fedcba"
     )
+    @NotNull(message = "{field.null}")
     @JsonProperty(value = "orderId")
     private UUID orderId;
 }

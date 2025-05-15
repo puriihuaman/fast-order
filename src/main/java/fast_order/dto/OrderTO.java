@@ -13,7 +13,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -48,9 +47,8 @@ public class OrderTO {
     @NotNull(message = "{field.null}")
     @Min(value = 1, message = "{order.amount.min}")
     @Positive(message = "{order.amount.positive}")
-    @Builder.Default
     @JsonProperty(value = "amount")
-    private Integer amount = 1;
+    private Integer amount;
     
     @Schema(
         description = "ID of the user placen the order. Related to the 'User' entity.",
@@ -72,6 +70,7 @@ public class OrderTO {
         description = "Current status of the order.",
         examples = {"PENDING", "FINISHED", "CANCELLED"}, defaultValue = "PENDING"
     )
+    @NotNull(message = "{field.null}")
     @Enumerated(EnumType.STRING)
     @JsonProperty(value = "status")
     private OrderStatus status;
@@ -79,7 +78,6 @@ public class OrderTO {
     @Schema(
         description = "Date and time the order was created.", example = "2025-04-13T15:42:00"
     )
-    @CreationTimestamp
     @JsonProperty(value = "createdAt")
     private LocalDateTime createdAt;
 }

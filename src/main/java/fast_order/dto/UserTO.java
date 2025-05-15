@@ -46,7 +46,6 @@ public class UserTO {
         description = "User's full name. Letters and spaces are allowed. Minimum 2 characters.",
         example = "Jorge Suarez", requiredMode = Schema.RequiredMode.REQUIRED
     )
-    @NotNull(message = "{field.null}")
     @NotEmpty(message = "{field.empty}")
     @Size(min = 2, message = "{user.name.size}")
     @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+", message = "{user.name.pattern}")
@@ -57,7 +56,7 @@ public class UserTO {
         description = "User email", example = "jorge@gmail.com",
         requiredMode = Schema.RequiredMode.REQUIRED
     )
-    @NotNull(message = "{field.null}")
+    @NotEmpty(message = "{field.empty}")
     @Email(message = "{user.email}")
     @JsonProperty(value = "email")
     private String email;
@@ -69,7 +68,6 @@ public class UserTO {
                       Minimum 8 characters.
                       """, example = "J0rG3#B&t3s", requiredMode = Schema.RequiredMode.REQUIRED
     )
-    @NotNull(message = "{field.null}")
     @NotEmpty(message = "{field.empty}")
     @Pattern(
         regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$", message = "{user.password}"
@@ -78,15 +76,13 @@ public class UserTO {
     private String password;
     
     @Schema(description = "User registration date. Must be today", example = "2025-04-12")
-    @Builder.Default
     @JsonProperty(value = "signUpDate", defaultValue = "TODAY")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDate signUpDate = LocalDate.now();
+    private LocalDate signUpDate;
     
     @Schema(description = "Total amount of user spending. Cannot be negative.", example = "150.50")
-    @Builder.Default
     @JsonProperty(value = "totalSpent")
-    private Double totalSpent = 0.0;
+    private Double totalSpent;
     
     @Schema(
         description = "ID of the assigned to the user. Relates to the Role entity", example = "2"

@@ -39,7 +39,6 @@ public class RoleEntity {
     @Column(name = "role_name", unique = true, nullable = false, length = 35)
     private RoleType roleName = RoleType.ADMIN;
     
-    @NotNull(message = "{field.null}")
     @NotEmpty(message = "{field.empty}")
     @Size(min = 5, message = "{role.description.size}")
     @Column(name = "description", nullable = false, length = 100)
