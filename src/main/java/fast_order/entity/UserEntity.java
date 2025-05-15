@@ -40,19 +40,17 @@ public class UserEntity {
     @Column(name = "user_id", unique = true)
     private UUID id;
     
-    @NotNull(message = "{field.null}")
     @NotEmpty(message = "{field.empty}")
     @Size(min = 2, message = "{user.name.size}")
     @Pattern(regexp = "^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]*", message = "{user.name.pattern}")
     @Column(name = "name", nullable = false, length = 80)
     private String name;
     
-    @NotNull(message = "{field.null}")
+    @NotEmpty(message = "{field.empty}")
     @Email(message = "{user.email}")
     @Column(name = "email", nullable = false, unique = true, length = 60)
     private String email;
     
-    @NotNull(message = "{field.null}")
     @NotEmpty(message = "{field.empty}")
     @Pattern(
         regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$", message = "{user.password}"
@@ -60,14 +58,12 @@ public class UserEntity {
     @Column(name = "password", nullable = false, length = 100)
     private String password;
     
-    @Builder.Default
     @NotNull(message = "{field.null}")
     @FutureOrPresent(message = "{user.signUpDate}")
     @Column(name = "sign_up_date", nullable = false)
     private LocalDate signUpDate = LocalDate.now();
     
     @Builder.Default
-    @NotNull(message = "{field.null}")
     @DecimalMin(value = "0.0", message = "{user.min.totalSpent}")
     @PositiveOrZero(message = "{user.totalSpent.positive}")
     @Column(name = "total_spent", nullable = false)

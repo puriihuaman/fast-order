@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -55,13 +56,19 @@ public class OrderEntity {
     @JoinColumn(name = "product_id", referencedColumnName = "product_id", nullable = false)
     private ProductEntity product;
     
-    @Builder.Default
+    @NotNull(message = "{field.null}")
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 15)
-    private OrderStatus status = OrderStatus.PENDING;
+    private OrderStatus status;
     
-    @Builder.Default
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime createdAt;
+    
+    @PrePersist
+    private void prePersist() {
+        if (this.status == null) {
+            this.status = OrderStatus.PENDING;
+        }
+    }
 }

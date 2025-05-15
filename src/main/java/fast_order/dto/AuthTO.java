@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
@@ -34,7 +33,6 @@ public record AuthTO(
         description = "User email", example = "jorge@gmail.com",
         requiredMode = Schema.RequiredMode.REQUIRED
     )
-    @NotNull(message = "{field.null}")
     @NotEmpty(message = "{field.empty}")
     @Email(message = "{auth.email}")
     @Size(max = 60)
@@ -49,7 +47,6 @@ public record AuthTO(
                       """, example = "J0rG3#B&t3s", requiredMode = Schema.RequiredMode.REQUIRED
     )
     
-    @NotNull(message = "{field.null}")
     @NotEmpty(message = "{field.empty}")
     @Pattern(
         regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[\\W_]).{8,}$",

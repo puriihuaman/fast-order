@@ -51,7 +51,6 @@ public class ProductTO {
         description = "Unique product name.", example = "Laptop Apple M1",
         requiredMode = Schema.RequiredMode.REQUIRED
     )
-    @NotNull(message = "{field.null}")
     @NotEmpty(message = "{field.empty}")
     @Size(min = 4, max = 60, message = "{product.name.size}")
     @JsonProperty(value = "name")
@@ -61,12 +60,11 @@ public class ProductTO {
         description = "Quantity available in product inventory.", example = "5",
         requiredMode = Schema.RequiredMode.REQUIRED
     )
-    @Builder.Default
     @NotNull(message = "{field.null}")
     @PositiveOrZero(message = "{product.stock.positive}")
     @Min(value = 0, message = "{product.stock.min}")
     @JsonProperty(value = "stock")
-    private Integer stock = 0;
+    private Integer stock;
     
     @Schema(
         description = "Unit price of the product.", example = "500.00",
@@ -83,7 +81,7 @@ public class ProductTO {
         example = "Laptop Apple M1 color negro, 16GB RAM, 500GB SSD.",
         requiredMode = Schema.RequiredMode.REQUIRED
     )
-    @NotNull(message = "{field.null}")
+    @NotEmpty(message = "{field.empty}")
     @Size(min = 10, max = 200, message = "{product.description.size}")
     @JsonProperty(value = "description")
     private String description;

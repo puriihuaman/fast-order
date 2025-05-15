@@ -15,6 +15,7 @@ public interface UserMapper {
     UserEntity toEntity(UserTO user);
     
     @Mapping(target = "roleId", source = "role.id")
+    @Mapping(target = "password", ignore = true)
     UserTO toDTO(UserEntity user);
     
     List<UserTO> toDTOList(List<UserEntity> users);

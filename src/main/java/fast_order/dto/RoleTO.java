@@ -51,16 +51,14 @@ public class RoleTO {
         requiredMode = Schema.RequiredMode.REQUIRED
     )
     @NotNull(message = "{field.null}")
-    @Builder.Default
     @Enumerated(EnumType.STRING)
     @JsonProperty(value = "roleName")
-    private RoleType roleName = RoleType.ADMIN;
+    private RoleType roleName;
     
     @Schema(
         description = "Role description.", example = "Full system access",
         requiredMode = Schema.RequiredMode.REQUIRED
     )
-    @NotNull(message = "{field.null}")
     @NotEmpty(message = "{field.empty}")
     @Size(min = 5, message = "{role.description.size}")
     @JsonProperty(value = "description")
