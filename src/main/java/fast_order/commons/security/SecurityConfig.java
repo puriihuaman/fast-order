@@ -15,18 +15,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
     private final JwtRequestFilter jwtRequestFilter;
+    private final CorsConfig corsConfig;
     
     private static final String ROLE_ADMIN = RoleType.ADMIN.name();
     private static final String ROLE_USER = RoleType.USER.name();
     private static final String ROLE_INVITED = RoleType.INVITED.name();
     
     
-    public SecurityConfig(final JwtRequestFilter jwtRequestFilter) {
+    public SecurityConfig(final JwtRequestFilter jwtRequestFilter, CorsConfig corsConfig) {
         this.jwtRequestFilter = jwtRequestFilter;
+        this.corsConfig = corsConfig;
     }
     
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.cors(cors -> cors.configurationSource(corsConfig));
         http.csrf(AbstractHttpConfigurer::disable);
         
         http.authorizeHttpRequests((authRequest) -> {
